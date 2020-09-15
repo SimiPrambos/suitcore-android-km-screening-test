@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>minumum_info_android</key>
+        <value>0</value>
+    </entry>
+    <entry>
+        <key>minimum_force_android</key>
+        <value>0</value>
+    </entry>
+    <entry>
+        <key>info_message</key>
+        <value>Please Update</value>
+    </entry>
+    <entry>
+        <key>force_message</key>
+        <value>Please Update</value>
+    </entry>
+    <entry>
+        <key>endpoint_url</key>
+        <value />
+    </entry>
+</defaultsMap>
+    <!-- END xml_defaults -->
