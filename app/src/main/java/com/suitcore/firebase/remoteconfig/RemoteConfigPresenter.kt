@@ -40,7 +40,7 @@ class RemoteConfigPresenter : BasePresenter<RemoteConfigView> {
                 FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(3600L)
                         .build())
 
-        mFireBaseRemoteConfig?.setDefaults(R.xml.remote_config_defaults)
+        mFireBaseRemoteConfig?.setDefaultsAsync(R.xml.remote_config_defaults)
     }
 
     fun checkUpdate(type: String) {

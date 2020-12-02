@@ -11,12 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.jcodecraeer.xrecyclerview.XRecyclerView
 import com.suitcore.R
-import kotlinx.android.synthetic.main.layout_base_empty.view.*
-import kotlinx.android.synthetic.main.layout_base_error.view.*
+import com.suitcore.databinding.LayoutBaseEmptyBinding
+import com.suitcore.databinding.LayoutBaseErrorBinding
+import com.suitcore.databinding.LayoutBaseRecyclerviewBinding
+import com.suitcore.databinding.LayoutBaseShimmerBinding
 
 class BaseRecyclerView : FrameLayout {
 
-    private lateinit var mRecyclerView: XRecyclerView
+    private lateinit var mRecyclerView: FrameLayout
     private lateinit var mEmptyView: FrameLayout
     private lateinit var mErrorView: FrameLayout
     private lateinit var mShimmerContainer: ShimmerFrameLayout
@@ -29,6 +31,10 @@ class BaseRecyclerView : FrameLayout {
     private var mPaddingRight: Int = 0
     private var mScrollbarStyle: Int = 0
     private var mScrollbar: Int = 0
+    lateinit var baseEmptyBinding: LayoutBaseEmptyBinding
+    lateinit var baseErrorBinding: LayoutBaseErrorBinding
+    lateinit var baseShimmerBinding: LayoutBaseShimmerBinding
+    lateinit var baseRecyclerBinding: LayoutBaseRecyclerviewBinding
 
     interface ReloadListener : OnClickListener
 
@@ -64,7 +70,6 @@ class BaseRecyclerView : FrameLayout {
 
     private fun initView() {
         buildViews()
-        addViews()
 
         // Configure the recycler view
         mRecyclerView.apply {
@@ -86,27 +91,24 @@ class BaseRecyclerView : FrameLayout {
     }
 
     private fun buildViews() {
-        mRecyclerView = XRecyclerView(context)
+        mRecyclerView = FrameLayout(context)
         mEmptyView = FrameLayout(context)
         mErrorView = FrameLayout(context)
         mShimmerContainer = ShimmerFrameLayout(context)
 
-        LayoutInflater.from(context).inflate(R.layout.layout_base_empty, mEmptyView)
-        LayoutInflater.from(context).inflate(R.layout.layout_base_error, mErrorView)
-        LayoutInflater.from(context).inflate(R.layout.layout_base_shimmer, mShimmerContainer)
-    }
+        baseEmptyBinding = LayoutBaseEmptyBinding.inflate(LayoutInflater.from(context), mEmptyView, false)
+        baseErrorBinding = LayoutBaseErrorBinding.inflate(LayoutInflater.from(context), mErrorView, false)
+        baseShimmerBinding = LayoutBaseShimmerBinding.inflate(LayoutInflater.from(context), mShimmerContainer, false)
+        baseRecyclerBinding = LayoutBaseRecyclerviewBinding.inflate(LayoutInflater.from(context), mRecyclerView, false)
 
-    private fun addViews() {
-        val lp = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-
-        addView(mRecyclerView, lp)
-        addView(mEmptyView, lp)
-        addView(mErrorView, lp)
-        addView(mShimmerContainer, lp)
+        addView(baseEmptyBinding.root)
+        addView(baseErrorBinding.root)
+        addView(baseShimmerBinding.root)
+        addView(baseRecyclerBinding.root)
     }
 
     fun setUpAsList() {
-        mRecyclerView.apply {
+        baseRecyclerBinding.recyclerView.apply {
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context)
@@ -114,7 +116,7 @@ class BaseRecyclerView : FrameLayout {
     }
 
     fun setUpAsListInScroll() {
-        mRecyclerView.apply {
+        baseRecyclerBinding.recyclerView.apply {
             setHasFixedSize(false)
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean {
@@ -125,7 +127,7 @@ class BaseRecyclerView : FrameLayout {
     }
 
     fun setUpAsGrid(spanCount: Int) {
-        mRecyclerView.apply {
+        baseRecyclerBinding.recyclerView.apply {
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
             layoutManager = GridLayoutManager(context, spanCount)
@@ -133,53 +135,13 @@ class BaseRecyclerView : FrameLayout {
     }
 
     fun setUpAsGridInScroll(spanCount: Int) {
-        mRecyclerView.apply {
+        baseRecyclerBinding.recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = object : GridLayoutManager(context, spanCount) {
                 override fun canScrollVertically(): Boolean {
                     return false
                 }
             }
-        }
-    }
-
-    fun getRecyclerView(): XRecyclerView {
-        return mRecyclerView
-    }
-
-    fun getEmptyView(): View? {
-        return if (mEmptyView.childCount > 0) mEmptyView.getChildAt(0) else null
-    }
-
-    fun getErrorView(): View? {
-        return if (mErrorView.childCount > 0) mErrorView.getChildAt(0) else null
-    }
-
-    fun setEmptyView(view: View) {
-        mEmptyView.apply {
-            removeAllViews()
-            addView(view)
-        }
-    }
-
-    fun setEmptyView(viewResourceId: Int) {
-        mEmptyView.apply {
-            removeAllViews()
-            LayoutInflater.from(context).inflate(viewResourceId, this)
-        }
-    }
-
-    fun setErrorView(view: View) {
-        mErrorView.apply {
-            removeAllViews()
-            addView(view)
-        }
-    }
-
-    fun setErrorView(viewResourceId: Int) {
-        mErrorView.apply {
-            removeAllViews()
-            LayoutInflater.from(context).inflate(viewResourceId, this)
         }
     }
 
@@ -202,27 +164,27 @@ class BaseRecyclerView : FrameLayout {
     }
 
     fun setHasFixedSize(hasFixedSize: Boolean) {
-        mRecyclerView.setHasFixedSize(hasFixedSize)
+        baseRecyclerBinding.recyclerView.setHasFixedSize(hasFixedSize)
     }
 
     fun setItemAnimator(animator: RecyclerView.ItemAnimator) {
-        mRecyclerView.itemAnimator = animator
+        baseRecyclerBinding.recyclerView.itemAnimator = animator
     }
 
     fun addItemDecoration(decor: RecyclerView.ItemDecoration) {
-        mRecyclerView.addItemDecoration(decor)
+        baseRecyclerBinding.recyclerView.addItemDecoration(decor)
     }
 
     fun addItemDecoration(decor: RecyclerView.ItemDecoration, index: Int) {
-        mRecyclerView.addItemDecoration(decor, index)
+        baseRecyclerBinding.recyclerView.addItemDecoration(decor, index)
     }
 
     fun removeItemDecoration(decor: RecyclerView.ItemDecoration) {
-        mRecyclerView.removeItemDecoration(decor)
+        baseRecyclerBinding.recyclerView.removeItemDecoration(decor)
     }
 
     fun getAdapter(): RecyclerView.Adapter<*>? {
-        return mRecyclerView.adapter
+        return baseRecyclerBinding.recyclerView.adapter
     }
 
     /**
@@ -230,99 +192,90 @@ class BaseRecyclerView : FrameLayout {
      */
 
     fun destroy() {
-        mRecyclerView.destroy()
+        baseRecyclerBinding.recyclerView.destroy()
     }
 
     fun addHeaderView(view: View) {
-        mRecyclerView.addHeaderView(view)
+        baseRecyclerBinding.recyclerView.addHeaderView(view)
     }
 
     fun loadMoreComplete() {
-        mRecyclerView.loadMoreComplete()
+        baseRecyclerBinding.recyclerView.loadMoreComplete()
     }
 
     fun setNoMore(isNoMore: Boolean) {
-        mRecyclerView.setNoMore(isNoMore)
+        baseRecyclerBinding.recyclerView.setNoMore(isNoMore)
     }
 
     fun setPullToRefreshEnable(isPullToRefresh: Boolean) {
-        mRecyclerView.setPullRefreshEnabled(isPullToRefresh)
+        baseRecyclerBinding.recyclerView.setPullRefreshEnabled(isPullToRefresh)
     }
 
     fun completeRefresh() {
-        mRecyclerView.refreshComplete()
+        baseRecyclerBinding.recyclerView.refreshComplete()
     }
 
     fun setLoadingMoreEnabled(isLoadMore: Boolean) {
-        mRecyclerView.setLoadingMoreEnabled(isLoadMore)
+        baseRecyclerBinding.recyclerView.setLoadingMoreEnabled(isLoadMore)
     }
 
     fun setAdapter(adapter: RecyclerView.Adapter<*>?) {
-        mRecyclerView.adapter = adapter
+        baseRecyclerBinding.recyclerView.adapter = adapter
     }
 
     fun setLayoutManager(layout: RecyclerView.LayoutManager) {
-        mRecyclerView.layoutManager = layout
+        baseRecyclerBinding.recyclerView.layoutManager = layout
     }
 
     fun setLoadingListener(listener: XRecyclerView.LoadingListener) {
-        mRecyclerView.setLoadingListener(listener)
+        baseRecyclerBinding.recyclerView.setLoadingListener(listener)
     }
 
     fun scrollToPosition(position: Int) {
-        mRecyclerView.scrollToPosition(position)
+        baseRecyclerBinding.recyclerView.scrollToPosition(position)
     }
 
     /**
      * Below are some methods for managing layout visibility
      */
     private fun hideAll() {
-        mRecyclerView.visibility = View.GONE
-        mEmptyView.visibility = View.GONE
-        mErrorView.visibility = View.GONE
-        mShimmerContainer.visibility = View.GONE
+        baseRecyclerBinding.contentRecyclerView.visibility = View.GONE
+        baseEmptyBinding.contentEmpty.visibility = View.GONE
+        baseErrorBinding.contentError.visibility = View.GONE
+        baseShimmerBinding.contentShimmer.visibility = View.GONE
         mShimmerContainer.stopShimmer()
     }
 
     fun showRecycler() {
         hideAll()
-        mRecyclerView.visibility = View.VISIBLE
+        baseRecyclerBinding.contentRecyclerView.visibility = View.VISIBLE
     }
 
     fun showShimmer() {
-        if (mShimmerContainer.childCount > 0) {
-            hideAll()
-            mShimmerContainer.visibility = View.VISIBLE
-        } else
-            showRecycler()
+        hideAll()
+        baseShimmerBinding.contentShimmer.visibility = View.VISIBLE
     }
 
     fun stopShimmer() {
         if (mShimmerContainer.isShimmerStarted) {
             mShimmerContainer.stopShimmer()
-            mShimmerContainer.visibility = View.GONE
+            baseShimmerBinding.contentShimmer.visibility = View.GONE
         }
     }
 
     fun showEmpty() {
-        if (mEmptyView.childCount > 0) {
-            hideAll()
-            mEmptyView.visibility = View.VISIBLE
-        } else
-            showRecycler()
+        hideAll()
+        baseEmptyBinding.contentEmpty.visibility = View.VISIBLE
     }
 
     fun hideEmpty() {
-        mEmptyView.visibility = View.GONE
+        baseEmptyBinding.contentEmpty.visibility = View.GONE
         showRecycler()
     }
 
     fun showError() {
-        if (mErrorView.childCount > 0) {
-            hideAll()
-            mErrorView.visibility = View.VISIBLE
-        } else
-            showRecycler()
+        hideAll()
+        baseErrorBinding.contentError.visibility = View.VISIBLE
     }
 
     fun initialShimmer(){
@@ -340,65 +293,65 @@ class BaseRecyclerView : FrameLayout {
      */
 
     fun setImageEmptyView(imageRes: Int) {
-        imgEmptyView.setImageResource(imageRes)
+        baseEmptyBinding.imgEmptyView.setImageResource(imageRes)
     }
 
     fun setTitleEmptyView(text: String) {
-        tvTitleEmptyView.text = text
+        baseEmptyBinding.tvTitleEmptyView.text = text
     }
 
     fun setContentEmptyView(text: String) {
-        tvContentEmptyView.text = text
+        baseEmptyBinding.tvContentEmptyView.text = text
     }
 
     fun showEmptyTitleView(status: Boolean) {
         when(status){
-            true -> tvTitleEmptyView.visibility = View.VISIBLE
-            false -> tvTitleEmptyView.visibility = View.GONE
+            true -> baseEmptyBinding.tvTitleEmptyView.visibility = View.VISIBLE
+            false -> baseEmptyBinding.tvTitleEmptyView.visibility = View.GONE
         }
     }
 
     fun setTextButtonEmptyView(text: String) {
-        btnEmpty.text = text
+        baseEmptyBinding.btnEmpty.text = text
     }
 
     fun setBackgroungEmptyButton(drawableRes: Int){
-        btnEmpty.setBackgroundResource(drawableRes)
+        baseEmptyBinding.btnEmpty.setBackgroundResource(drawableRes)
     }
 
     fun setEmptyButtonListener(listener: ReloadListener) {
-        btnEmpty.setOnClickListener(listener)
+        baseEmptyBinding.btnEmpty.setOnClickListener(listener)
     }
 
     fun setImageErrorView(imageRes: Int) {
-        imgErrorView.setImageResource(imageRes)
+        baseErrorBinding.imgErrorView.setImageResource(imageRes)
     }
 
     fun setTitleErrorView(text: String) {
-        tvTitleErrorView.text = text
+        baseErrorBinding.tvTitleErrorView.text = text
     }
 
     fun setContentErrorView(text: String) {
-        tvContentErrorView.text = text
+        baseErrorBinding.tvContentErrorView.text = text
     }
 
     fun showErrorTitleView(status: Boolean) {
         when(status){
-            true -> tvTitleErrorView.visibility = View.VISIBLE
-            false -> tvTitleErrorView.visibility = View.GONE
+            true -> baseErrorBinding.tvTitleErrorView.visibility = View.VISIBLE
+            false -> baseErrorBinding.tvTitleErrorView.visibility = View.GONE
         }
     }
 
     fun setTextButtonErrorView(text: String) {
-        btnError.text = text
+        baseErrorBinding.btnError.text = text
     }
 
     fun setBackgroungErrorButton(drawableRes: Int){
-        btnError.setBackgroundResource(drawableRes)
+        baseErrorBinding.btnError.setBackgroundResource(drawableRes)
     }
 
     fun setErrorButtonListener(listener: ReloadListener) {
-        btnError.setOnClickListener(listener)
+        baseErrorBinding.btnError.setOnClickListener(listener)
     }
 
 }

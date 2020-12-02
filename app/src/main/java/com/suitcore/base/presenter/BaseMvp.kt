@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 
 interface MvpView {
 
-    fun showLoading(isBackPressedCancelable: Boolean = true, message: String? = null, currentPage: Int? = 1)
+    fun showLoading(isBackPressedCancelable: Boolean = true, message: String? = null)
 
     fun showLoadingWithText(msg: String)
 

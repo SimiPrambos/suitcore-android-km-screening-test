@@ -2,6 +2,9 @@ package com.suitcore.feature.event
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import androidx.viewpager.widget.ViewPager
 import com.google.gson.JsonPrimitive
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -13,9 +16,9 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions
 import com.suitcore.R
 import com.suitcore.base.ui.BaseFragment
 import com.suitcore.data.model.Event
+import com.suitcore.databinding.FragmentEventBinding
 import com.suitcore.feature.event.search.SearchPlaceActivity
 import com.suitcore.helper.CommonUtils
-import kotlinx.android.synthetic.main.fragment_event.*
 
 
 class EventFragment : BaseFragment(), EventView {
@@ -27,17 +30,20 @@ class EventFragment : BaseFragment(), EventView {
     private var symbolManager: SymbolManager? = null
     private var arrayEvent = emptyList<Event>()
     private var hashMapEvents: HashMap<Int, Int> = hashMapOf()
-
     private var markerNormal = "marker_normal"
     private var markerSelected = "marker_selected"
 
-    override val resourceLayout: Int
-        get() = R.layout.fragment_event
+    private lateinit var eventBinding: FragmentEventBinding
 
     companion object {
-        fun newInstance(): BaseFragment? {
+        fun newInstance(): BaseFragment {
             return EventFragment()
         }
+    }
+
+    override fun setBinding(inflater: LayoutInflater, container: ViewGroup?): ViewBinding {
+        eventBinding = FragmentEventBinding.inflate(inflater, container, false)
+        return eventBinding
     }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
@@ -53,7 +59,7 @@ class EventFragment : BaseFragment(), EventView {
 
     private fun setupMap(events: List<Event>) {
         setupPager(events)
-        mapEvent.getMapAsync { mapBoxMap ->
+        eventBinding.mapEvent.getMapAsync { mapBoxMap ->
             this.mapBox = mapBoxMap
 
             mapBoxMap.setStyle(Style.MAPBOX_STREETS) { style ->
@@ -62,7 +68,7 @@ class EventFragment : BaseFragment(), EventView {
 
                 // create symbol manager
                 val geoJsonOptions = GeoJsonOptions().withTolerance(0.4f)
-                symbolManager = SymbolManager(mapEvent, mapBoxMap, style, null, geoJsonOptions)
+                symbolManager = SymbolManager(eventBinding.mapEvent, mapBoxMap, style, null, geoJsonOptions)
                 symbolManager?.addClickListener { symbol ->
                     showToast("value : " + symbol.data?.asString.toString())
                     val pos = hashMapEvents.filterKeys { it == symbol.data?.asInt }.getValue(symbol.data?.asInt!!)
@@ -97,7 +103,7 @@ class EventFragment : BaseFragment(), EventView {
         symbolManager?.symbolPlacement = markerSelected
         symbolManager?.update(symbol)
 
-        vpEvent.currentItem = position
+        eventBinding.vpEvent.currentItem = position
         for (item in 0 until symbolManager?.annotations?.size()!!) {
             val currentSymbol = symbolManager.annotations!![item.toLong()]
             if (currentSymbol?.id != symbol?.id) {
@@ -118,13 +124,13 @@ class EventFragment : BaseFragment(), EventView {
         }
 
         adapter?.listData = events
-        vpEvent.adapter = adapter
+        eventBinding.vpEvent.adapter = adapter
 
-        vpEvent.clipToPadding = false
-        vpEvent.setPadding(50, 0, 50, 0)
-        vpEvent.pageMargin = 20
+        eventBinding.vpEvent.clipToPadding = false
+        eventBinding.vpEvent.setPadding(50, 0, 50, 0)
+        eventBinding.vpEvent.pageMargin = 20
 
-        vpEvent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        eventBinding.vpEvent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
 
             }
@@ -145,7 +151,7 @@ class EventFragment : BaseFragment(), EventView {
     }
 
     private fun actionClick() {
-        relSearch.setOnClickListener {
+        eventBinding.relSearch.setOnClickListener {
             goToActivity(SearchPlaceActivity::class.java, null, false, isFinish = false)
         }
     }

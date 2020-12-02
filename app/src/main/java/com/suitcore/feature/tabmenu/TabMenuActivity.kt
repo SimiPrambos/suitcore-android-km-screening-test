@@ -2,16 +2,18 @@ package com.suitcore.feature.tabmenu
 
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.viewbinding.ViewBinding
 import androidx.viewpager.widget.ViewPager
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
+import com.suitcore.databinding.ActivityTabMenuBinding
+import com.suitcore.databinding.LayoutBottomMenuBinding
 import com.suitcore.feature.login.LoginActivity
-import kotlinx.android.synthetic.main.activity_tab_menu.*
-import kotlinx.android.synthetic.main.layout_bottom_menu.*
 
 
 /**
@@ -21,24 +23,36 @@ import kotlinx.android.synthetic.main.layout_bottom_menu.*
 class TabMenuActivity : BaseActivity() {
 
     private var mPagerAdapter: MainPagerAdapter? = null
+    private lateinit var tabMenuBinding : ActivityTabMenuBinding
+    private lateinit var linBottomNavBinding: LayoutBottomMenuBinding
 
-    override val resourceLayout: Int = R.layout.activity_tab_menu
+    override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
+
+    private fun initBinding(layoutInflater: LayoutInflater) : ViewBinding {
+        tabMenuBinding = ActivityTabMenuBinding.inflate(layoutInflater)
+        return tabMenuBinding
+    }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
+        initIncludeViewBinding()
         setUpPagerListener()
         actionClick()
     }
 
+    private fun initIncludeViewBinding(){
+        linBottomNavBinding = tabMenuBinding.linBottomNav
+    }
+
     private fun setUpPagerListener() {
         mPagerAdapter = MainPagerAdapter(supportFragmentManager)
-        pager.clipToPadding = false
-        pager.offscreenPageLimit = 3
+        tabMenuBinding.pager.clipToPadding = false
+        tabMenuBinding.pager.offscreenPageLimit = 3
 
         val gap = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics).toInt()
 
-        pager.pageMargin = gap
-        pager.adapter = mPagerAdapter
-        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        tabMenuBinding.pager.pageMargin = gap
+        tabMenuBinding.pager.adapter = mPagerAdapter
+        tabMenuBinding.pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
@@ -52,7 +66,7 @@ class TabMenuActivity : BaseActivity() {
             }
         })
 
-        pager.setPageTransformer(false) { view, _ ->
+        tabMenuBinding.pager.setPageTransformer(false) { view, _ ->
             view.alpha = 0f
             view.visibility = View.VISIBLE
 
@@ -63,28 +77,28 @@ class TabMenuActivity : BaseActivity() {
     }
 
     private fun setTitle(title: String) {
-        tvTitle.text = title
+        tabMenuBinding.tvTitle.text = title
     }
 
     private fun setSelectedNavigation(position: Int) {
         when (position) {
             0 -> {
                 setTitle("Member List")
-                setSelectorColorNav(imgMenu1, tvMenu1, R.color.colorPrimary)
-                setSelectorColorNav(imgMenu2, tvMenu2, R.color.gray)
-                setSelectorColorNav(imgMenu3, tvMenu3, R.color.gray)
+                setSelectorColorNav(linBottomNavBinding.imgMenu1, linBottomNavBinding.tvMenu1, R.color.colorPrimary)
+                setSelectorColorNav(linBottomNavBinding.imgMenu2, linBottomNavBinding.tvMenu2, R.color.gray)
+                setSelectorColorNav(linBottomNavBinding.imgMenu3, linBottomNavBinding.tvMenu3, R.color.gray)
             }
             1 -> {
                 setTitle("Dialog Sample")
-                setSelectorColorNav(imgMenu1, tvMenu1, R.color.gray)
-                setSelectorColorNav(imgMenu2, tvMenu2, R.color.colorPrimary)
-                setSelectorColorNav(imgMenu3, tvMenu3, R.color.gray)
+                setSelectorColorNav(linBottomNavBinding.imgMenu1, linBottomNavBinding.tvMenu1, R.color.gray)
+                setSelectorColorNav(linBottomNavBinding.imgMenu2, linBottomNavBinding.tvMenu2, R.color.colorPrimary)
+                setSelectorColorNav(linBottomNavBinding.imgMenu3, linBottomNavBinding.tvMenu3, R.color.gray)
             }
             2 -> {
                 setTitle("Map Sample")
-                setSelectorColorNav(imgMenu1, tvMenu1, R.color.gray)
-                setSelectorColorNav(imgMenu2, tvMenu2, R.color.gray)
-                setSelectorColorNav(imgMenu3, tvMenu3, R.color.colorPrimary)
+                setSelectorColorNav(linBottomNavBinding.imgMenu1, linBottomNavBinding.tvMenu1, R.color.gray)
+                setSelectorColorNav(linBottomNavBinding.imgMenu2, linBottomNavBinding.tvMenu2, R.color.gray)
+                setSelectorColorNav(linBottomNavBinding.imgMenu3, linBottomNavBinding.tvMenu3, R.color.colorPrimary)
             }
         }
     }
@@ -95,19 +109,19 @@ class TabMenuActivity : BaseActivity() {
     }
 
     private fun actionClick() {
-        relButton1.setOnClickListener {
-            pager.currentItem = 0
+        linBottomNavBinding.relButton1.setOnClickListener {
+            tabMenuBinding.pager.currentItem = 0
         }
 
-        relButton2.setOnClickListener {
-            pager.currentItem = 1
+        linBottomNavBinding.relButton2.setOnClickListener {
+            tabMenuBinding.pager.currentItem = 1
         }
 
-        relButton3.setOnClickListener {
-            pager.currentItem = 2
+        linBottomNavBinding.relButton3.setOnClickListener {
+            tabMenuBinding.pager.currentItem = 2
         }
 
-        relButton4.setOnClickListener {
+        linBottomNavBinding.relButton4.setOnClickListener {
             goToActivity(LoginActivity::class.java, null, clearIntent = false, isFinish = false)
         }
 

@@ -1,10 +1,13 @@
 package com.suitcore.base.ui.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.suitcore.base.ui.adapter.viewholder.BaseItemViewHolder
+import com.suitcore.databinding.ItemMemberBinding
 import java.util.*
 
 abstract class BaseRecyclerAdapter<Data, Holder : BaseItemViewHolder<Data>> : RecyclerView.Adapter<Holder>() {
@@ -19,12 +22,6 @@ abstract class BaseRecyclerAdapter<Data, Holder : BaseItemViewHolder<Data>> : Re
     init {
         mData = ArrayList()
     }
-
-    protected fun getView(parent: ViewGroup): View {
-        return LayoutInflater.from(parent.context).inflate(getItemResourceLayout(), parent, false)
-    }
-
-    protected abstract fun getItemResourceLayout(): Int
 
     abstract override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder
 

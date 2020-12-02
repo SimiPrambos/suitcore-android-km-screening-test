@@ -31,9 +31,7 @@ class MemberPresenter : BasePresenter<MemberView> {
 
     fun getMemberCache() {
         /* from Realm Model */
-        val data: RealmResults<User>? = mRealm?.getData(User::class.java)
-
-        //if (data == null) data = emptyList()
+        val data: RealmResults<User>? = mRealm?.getData(User::class.java, "id")
 
         mvpView?.onMemberCacheLoaded(data)
     }

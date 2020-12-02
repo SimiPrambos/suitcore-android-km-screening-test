@@ -11,24 +11,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.Window
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
-import com.suitcore.R
+import androidx.viewbinding.ViewBinding
 import com.suitcore.base.presenter.MvpView
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
+import com.suitcore.helper.CommonDialogHelper
 import com.suitcore.helper.CommonLoadingDialog
 
 
-abstract class BaseActivity : AppCompatActivity(), MvpView {
+abstract class BaseActivity: AppCompatActivity(), MvpView {
 
+    protected open var binding: ViewBinding? = null
     private var toolBar: Toolbar? = null
-    private var mInflater: LayoutInflater? = null
     private var mActionBar: ActionBar? = null
     private var mCommonLoadingDialog: CommonLoadingDialog? = null
     private var activityIntent: Intent? = null
@@ -36,14 +35,19 @@ abstract class BaseActivity : AppCompatActivity(), MvpView {
     private val baseFragmentManager: FragmentManager
         get() = super.getSupportFragmentManager()
 
-    protected abstract val resourceLayout: Int
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(resourceLayout)
-        mInflater = LayoutInflater.from(this)
+        setContentView(getInflatedLayout(layoutInflater))
         onViewReady(savedInstanceState)
     }
+
+    private fun getInflatedLayout(inflater: LayoutInflater): View {
+        this.binding = setBinding(inflater)
+        return binding?.root
+                ?: error("Please add your inflated binding class instance")
+    }
+
+    abstract fun setBinding(layoutInflater: LayoutInflater): ViewBinding
 
     protected fun setupToolbar(baseToolbar: Toolbar, needHomeButton: Boolean) {
         baseToolbar.title = ""
@@ -98,7 +102,7 @@ abstract class BaseActivity : AppCompatActivity(), MvpView {
         activityIntent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
-    fun goToActivity(actDestination: Class<out Activity>, data: Bundle?, clearIntent: Boolean, isFinish: Boolean) {
+    fun goToActivity(actDestination: Class<*>, data: Bundle?, clearIntent: Boolean, isFinish: Boolean) {
 
         activityIntent = Intent(this, actDestination)
 
@@ -115,7 +119,7 @@ abstract class BaseActivity : AppCompatActivity(), MvpView {
         }
     }
 
-    fun goToActivity(resultCode: Int, actDestination: Class<out Activity>, data: Bundle?) {
+    fun goToActivity(resultCode: Int, actDestination:  Class<*>, data: Bundle?) {
         activityIntent = Intent(this, actDestination)
 
         data?.let { activityIntent?.putExtras(data) }
@@ -138,14 +142,12 @@ abstract class BaseActivity : AppCompatActivity(), MvpView {
 
     protected abstract fun onViewReady(savedInstanceState: Bundle?)
 
-    override fun showLoading(isBackPressedCancelable: Boolean, message: String?, currentPage: Int?) {
-        if (currentPage == 1) {
-            mCommonLoadingDialog?.let {
-                hideLoading()
-            }
-            mCommonLoadingDialog = CommonLoadingDialog.createLoaderDialog(msg = message)
-            mCommonLoadingDialog?.show(supportFragmentManager, CommonLoadingDialog.TAG)
+    override fun showLoading(isBackPressedCancelable: Boolean, message: String?) {
+        mCommonLoadingDialog?.let {
+            hideLoading()
         }
+        mCommonLoadingDialog = CommonLoadingDialog.createLoaderDialog(msg = message)
+        mCommonLoadingDialog?.show(supportFragmentManager, CommonLoadingDialog.TAG)
     }
 
     override fun showLoadingWithText(msg: String) {
@@ -161,24 +163,11 @@ abstract class BaseActivity : AppCompatActivity(), MvpView {
     }
 
     override fun showConfirmationDialog(message: String, confirmCallback: () -> Unit) {
-        val confirmDialog = AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton(R.string.txt_dialog_yes) { _, _ -> confirmCallback() }
-                .setNegativeButton(R.string.txt_dialog_no) { _, _ -> }
-                .create()
-
-        confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        confirmDialog.show()
+        CommonDialogHelper.showConfirmationDialog(this, message, confirmCallback)
     }
 
     override fun showConfirmationSingleDialog(message: String, confirmCallback: () -> Unit) {
-        val confirmDialog = AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton(R.string.txt_dialog_ok) { _, _ -> confirmCallback() }
-                .create()
-
-        confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        confirmDialog.show()
+        CommonDialogHelper.showConfirmationSingleDialog(this, message, confirmCallback)
     }
 
     override fun showConfirmationDialog(message: Int, confirmCallback: () -> Unit) {
@@ -187,13 +176,7 @@ abstract class BaseActivity : AppCompatActivity(), MvpView {
     }
 
     override fun showAlertDialog(message: String) {
-        val confirmDialog = AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton(R.string.txt_dialog_ok) { d, _ -> d.dismiss() }
-                .create()
-
-        confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        confirmDialog.show()
+        CommonDialogHelper.showAlertDialog(this, message)
     }
 
     override fun showAlertDialog(message: Int) {

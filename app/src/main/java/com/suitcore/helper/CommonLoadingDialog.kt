@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.suitcore.R
-import kotlinx.android.synthetic.main.dialog_loading.view.*
+import com.suitcore.databinding.DialogLoadingBinding
 
 class CommonLoadingDialog : DialogFragment() {
 
@@ -49,9 +49,9 @@ class CommonLoadingDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.dialog_loading, container, false)
-        view.tvLoading.text = message
-        return view
+        val binding = DialogLoadingBinding.inflate(inflater, container, false)
+        binding.tvLoading.text = message
+        return binding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

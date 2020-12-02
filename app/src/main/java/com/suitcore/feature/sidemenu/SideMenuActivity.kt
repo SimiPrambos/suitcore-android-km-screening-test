@@ -3,23 +3,23 @@ package com.suitcore.feature.sidemenu
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
 import com.suitcore.data.model.SideMenu
+import com.suitcore.databinding.ActivitySideMenuBinding
+import com.suitcore.databinding.LayoutSideMenuBinding
 import com.suitcore.feature.event.EventFragment
 import com.suitcore.feature.fragmentsample.SampleFragment
 import com.suitcore.feature.login.LoginActivity
 import com.suitcore.feature.member.MemberFragment
 import com.suitcore.helper.CommonConstant
-import kotlinx.android.synthetic.main.activity_side_menu.*
-import kotlinx.android.synthetic.main.layout_base_shimmer.*
-import kotlinx.android.synthetic.main.layout_side_menu.*
-
 
 /**
  * Created by @dodydmw19 on 10, September, 2020
@@ -32,8 +32,8 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     private var isDrawerOpen = false
     private var finalFragment: Fragment? = null
     private var arraySideMenu: List<SideMenu>? = emptyList()
-
-    override val resourceLayout: Int = R.layout.activity_side_menu
+    private lateinit var sideMenuBinding: ActivitySideMenuBinding
+    private lateinit var viewSideMenuBinding: LayoutSideMenuBinding
 
     companion object {
         fun createIntent(context: Context?): Intent {
@@ -41,13 +41,25 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
         }
     }
 
+    override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
+
+    private fun initBinding(layoutInflater: LayoutInflater) : ViewBinding {
+        sideMenuBinding = ActivitySideMenuBinding.inflate(layoutInflater)
+        return sideMenuBinding
+    }
+
     override fun onViewReady(savedInstanceState: Bundle?) {
+        initIncludeViewBinding()
         setupProgressView()
         setupEmptyView()
         setupErrorView()
         setupPresenter()
         setUpSideBar()
         actionClick()
+    }
+
+    private fun initIncludeViewBinding(){
+        viewSideMenuBinding = sideMenuBinding.sideMenu
     }
 
     private fun setupPresenter() {
@@ -57,7 +69,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     }
 
     private fun setUpSideBar() {
-        val drawerToggle = object : ActionBarDrawerToggle(this, drawerLayout, mToolbar, 0, 0) {
+        val drawerToggle = object : ActionBarDrawerToggle(this, sideMenuBinding.drawerLayout, sideMenuBinding.mToolbar, 0, 0) {
             override fun onDrawerOpened(drawerView: View) {
                 super.onDrawerOpened(drawerView)
                 isDrawerOpen = true
@@ -74,19 +86,19 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
 
         drawerToggle.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.black)
         drawerToggle.syncState()
-        drawerLayout?.addDrawerListener(drawerToggle)
+        sideMenuBinding.drawerLayout.addDrawerListener(drawerToggle)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
 
         sideMenuAdapter?.selectedItem = 0
         finalFragment = MemberFragment()
-        tvTitle.text = getString(R.string.txt_toolbar_home)
+        sideMenuBinding.tvTitle.text = getString(R.string.txt_toolbar_home)
         setContentFragment(finalFragment)
     }
 
     private fun setupList(sideMenus: List<SideMenu>) {
-        rvSideMenu.apply {
+        viewSideMenuBinding.rvSideMenu.apply {
             setUpAsList()
             setAdapter(sideMenuAdapter)
             setPullToRefreshEnable(false)
@@ -94,24 +106,24 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
         }
         sideMenuAdapter?.setOnActionListener(this)
         sideMenuAdapter?.add(sideMenus)
-        rvSideMenu.stopShimmer()
-        rvSideMenu.showRecycler()
-        finishLoad(rvSideMenu)
+        viewSideMenuBinding.rvSideMenu.stopShimmer()
+        viewSideMenuBinding.rvSideMenu.showRecycler()
+        finishLoad(viewSideMenuBinding.rvSideMenu)
     }
 
     private fun setupProgressView() {
         R.layout.layout_shimmer_member.apply {
-            viewStub.layoutResource = this
+            viewSideMenuBinding.rvSideMenu.baseShimmerBinding.viewStub.layoutResource = this
         }
 
-        viewStub.inflate()
+        viewSideMenuBinding.rvSideMenu.baseShimmerBinding.viewStub.inflate()
     }
 
     private fun setupEmptyView() {
-        rvSideMenu.setImageEmptyView(R.drawable.empty_state)
-        rvSideMenu.setTitleEmptyView(getString(R.string.txt_empty_member))
-        rvSideMenu.setContentEmptyView(getString(R.string.txt_empty_member_content))
-        rvSideMenu.setEmptyButtonListener(object : BaseRecyclerView.ReloadListener {
+        viewSideMenuBinding.rvSideMenu.setImageEmptyView(R.drawable.empty_state)
+        viewSideMenuBinding.rvSideMenu.setTitleEmptyView(getString(R.string.txt_empty_member))
+        viewSideMenuBinding.rvSideMenu.setContentEmptyView(getString(R.string.txt_empty_member_content))
+        viewSideMenuBinding.rvSideMenu.setEmptyButtonListener(object : BaseRecyclerView.ReloadListener {
 
             override fun onClick(v: View?) {
             }
@@ -120,10 +132,10 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     }
 
     private fun setupErrorView() {
-        rvSideMenu.setImageErrorView(R.drawable.empty_state)
-        rvSideMenu.setTitleErrorView(getString(R.string.txt_error_no_internet_connection))
-        rvSideMenu.setContentErrorView(getString(R.string.txt_error_connection))
-        rvSideMenu.setErrorButtonListener(object : BaseRecyclerView.ReloadListener {
+        viewSideMenuBinding.rvSideMenu.setImageErrorView(R.drawable.empty_state)
+        viewSideMenuBinding.rvSideMenu.setTitleErrorView(getString(R.string.txt_error_no_internet_connection))
+        viewSideMenuBinding.rvSideMenu.setContentErrorView(getString(R.string.txt_error_connection))
+        viewSideMenuBinding.rvSideMenu.setErrorButtonListener(object : BaseRecyclerView.ReloadListener {
 
             override fun onClick(v: View?) {
             }
@@ -142,7 +154,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     }
 
     private fun closeDrawers() {
-        drawerLayout.closeDrawers()
+        sideMenuBinding.drawerLayout.closeDrawers()
     }
 
     override fun onSideMenuLoaded(sideMenus: List<SideMenu>?) {
@@ -162,7 +174,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     override fun onClicked(view: SideMenuItemView, position: Int) {
         view.getData().let { data ->
 
-            tvTitle.text = data?.label
+            sideMenuBinding.tvTitle.text = data?.label
             finalFragment = null
             sideMenuAdapter?.selectedItem = position
             finalFragment = when (view.getData()?.url) {
@@ -189,7 +201,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     }
 
     private fun actionClick() {
-        relLogin.setOnClickListener {
+        viewSideMenuBinding.relLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             closeDrawers()
         }
@@ -202,6 +214,5 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
             finish()
         }
     }
-
 
 }

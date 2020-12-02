@@ -2,48 +2,55 @@ package com.suitcore.feature.member
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import com.jcodecraeer.xrecyclerview.XRecyclerView
 import com.suitcore.R
 import com.suitcore.base.ui.BaseFragment
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
 import com.suitcore.data.model.ErrorCodeHelper
 import com.suitcore.data.model.User
+import com.suitcore.databinding.FragmentMemberBinding
 import io.realm.RealmResults
-import kotlinx.android.synthetic.main.fragment_member.*
-import kotlinx.android.synthetic.main.layout_base_shimmer.*
 
 /**
  * Created by DODYDMW19 on 1/30/2018.
  */
 
-class MemberFragment : BaseFragment(),
-        MemberView,
-        MemberItemView.OnActionListener {
+class MemberFragment : BaseFragment(), MemberView, MemberItemView.OnActionListener {
 
     private var memberPresenter: MemberPresenter? = null
     private var currentPage: Int = 1
-    private var memberAdapter: MemberAdapter? = MemberAdapter()
+    private var memberAdapter: MemberAdapter? = null
+    private lateinit var memberBinding: FragmentMemberBinding
 
     companion object {
-        fun newInstance(): BaseFragment? {
+        fun newInstance(): BaseFragment {
             return MemberFragment()
         }
     }
 
-    override val resourceLayout: Int = R.layout.fragment_member
+    override fun setBinding(inflater: LayoutInflater, container: ViewGroup?): ViewBinding {
+        memberBinding = FragmentMemberBinding.inflate(inflater, container, false)
+        return memberBinding
+    }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
         setupProgressView()
         setupEmptyView()
         setupErrorView()
         setupList()
-        Handler().postDelayed({ setupPresenter() }, 100)
+        Handler(Looper.getMainLooper()).postDelayed({
+            setupPresenter()
+        }, 100)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        clearRecyclerView(rvMember)
+        clearRecyclerView(memberBinding.rvMember)
     }
 
     private fun setupPresenter() {
@@ -54,14 +61,16 @@ class MemberFragment : BaseFragment(),
     }
 
     private fun setupList() {
-        rvMember.apply {
+        memberAdapter = context?.let { MemberAdapter(it) }
+        memberBinding.rvMember.apply {
             setUpAsList()
             setAdapter(memberAdapter)
             setPullToRefreshEnable(true)
             setLoadingMoreEnabled(true)
             setLoadingListener(object : XRecyclerView.LoadingListener {
                 override fun onRefresh() {
-                    loadData(1)
+                    currentPage = 1
+                    loadData(currentPage)
                 }
 
                 override fun onLoadMore() {
@@ -71,10 +80,10 @@ class MemberFragment : BaseFragment(),
             })
         }
         memberAdapter?.setOnActionListener(this)
-        rvMember.showShimmer()
+        memberBinding.rvMember.showShimmer()
     }
 
-    private fun loadData(page: Int){
+    private fun loadData(page: Int) {
         memberPresenter?.getMember(page)
     }
 
@@ -87,23 +96,23 @@ class MemberFragment : BaseFragment(),
             }
             memberAdapter?.add(it)
         }
-        rvMember.stopShimmer()
-        rvMember.showRecycler()
+        memberBinding.rvMember.stopShimmer()
+        memberBinding.rvMember.showRecycler()
     }
 
     private fun setupProgressView() {
         R.layout.layout_shimmer_member.apply {
-            viewStub.layoutResource = this
+            memberBinding.rvMember.baseShimmerBinding.viewStub.layoutResource = this
         }
 
-        viewStub.inflate()
+        memberBinding.rvMember.baseShimmerBinding.viewStub.inflate()
     }
 
     private fun setupEmptyView() {
-        rvMember.setImageEmptyView(R.drawable.empty_state)
-        rvMember.setTitleEmptyView(getString(R.string.txt_empty_member))
-        rvMember.setContentEmptyView(getString(R.string.txt_empty_member_content))
-        rvMember.setEmptyButtonListener(object : BaseRecyclerView.ReloadListener {
+        memberBinding.rvMember.setImageEmptyView(R.drawable.empty_state)
+        memberBinding.rvMember.setTitleEmptyView(getString(R.string.txt_empty_member))
+        memberBinding.rvMember.setContentEmptyView(getString(R.string.txt_empty_member_content))
+        memberBinding.rvMember.setEmptyButtonListener(object : BaseRecyclerView.ReloadListener {
 
             override fun onClick(v: View?) {
                 loadData(1)
@@ -113,10 +122,10 @@ class MemberFragment : BaseFragment(),
     }
 
     private fun setupErrorView() {
-        rvMember.setImageErrorView(R.drawable.empty_state)
-        rvMember.setTitleErrorView(getString(R.string.txt_error_no_internet))
-        rvMember.setContentErrorView(getString(R.string.txt_error_connection))
-        rvMember.setErrorButtonListener(object : BaseRecyclerView.ReloadListener {
+        memberBinding.rvMember.setImageErrorView(R.drawable.empty_state)
+        memberBinding.rvMember.setTitleErrorView(getString(R.string.txt_error_no_internet))
+        memberBinding.rvMember.setContentErrorView(getString(R.string.txt_error_connection))
+        memberBinding.rvMember.setErrorButtonListener(object : BaseRecyclerView.ReloadListener {
 
             override fun onClick(v: View?) {
                 loadData(1)
@@ -125,14 +134,14 @@ class MemberFragment : BaseFragment(),
         })
     }
 
-    private fun showError(){
-        finishLoad(rvMember)
-        rvMember.showError()
+    private fun showError() {
+        finishLoad(memberBinding.rvMember)
+        memberBinding.rvMember.showError()
     }
 
-    private fun showEmpty(){
-        finishLoad(rvMember)
-        rvMember.showEmpty()
+    private fun showEmpty() {
+        finishLoad(memberBinding.rvMember)
+        memberBinding.rvMember.showEmpty()
     }
 
     override fun onMemberCacheLoaded(members: RealmResults<User>?) {
@@ -141,7 +150,7 @@ class MemberFragment : BaseFragment(),
                 setData(members)
             }
         }
-        finishLoad(rvMember)
+        finishLoad(memberBinding.rvMember)
     }
 
     override fun onMemberLoaded(members: List<User>?) {
@@ -150,7 +159,7 @@ class MemberFragment : BaseFragment(),
                 setData(members)
             }
         }
-        finishLoad(rvMember)
+        finishLoad(memberBinding.rvMember)
     }
 
     override fun onMemberEmpty() {

@@ -57,7 +57,9 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <include layout="@layout/layout_side_menu" />
+        <include
+            android:id="@+id/sideMenu"
+            layout="@layout/layout_side_menu" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 

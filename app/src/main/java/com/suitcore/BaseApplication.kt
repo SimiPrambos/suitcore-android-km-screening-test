@@ -80,7 +80,6 @@ class BaseApplication : MultiDexApplication() {
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE)
 
         OneSignal.idsAvailable { userId, _ ->
-
             if (userId != null) {
                 SuitPreferences.instance()?.saveString(DataConstant.PLAYER_ID, userId)
             }

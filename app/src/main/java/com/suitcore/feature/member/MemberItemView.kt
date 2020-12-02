@@ -1,15 +1,14 @@
 package com.suitcore.feature.member
 
 import android.annotation.SuppressLint
-import android.view.View
 import com.suitcore.base.ui.adapter.viewholder.BaseItemViewHolder
 import com.suitcore.data.model.User
-import kotlinx.android.synthetic.main.item_member.view.*
+import com.suitcore.databinding.ItemMemberBinding
 
 /**
  * Created by DODYDMW19 on 1/30/2018.
  */
-class MemberItemView(itemView: View) : BaseItemViewHolder<User>(itemView) {
+class MemberItemView(var binding: ItemMemberBinding) : BaseItemViewHolder<User>(binding) {
 
     private var mActionListener: OnActionListener? = null
     private var user: User? = null
@@ -20,12 +19,11 @@ class MemberItemView(itemView: View) : BaseItemViewHolder<User>(itemView) {
             // for get context = itemView.context
 
             this.user = data
-            itemView.imgMember.setImageURI(data?.avatar)
-            itemView.txtMemberName.text = data?.firstName + " " + data?.lastName
-            itemView.button.setOnClickListener {
+            binding.imgMember.setImageURI(data?.avatar)
+            binding.txtMemberName.text = data?.firstName + " " + data?.lastName
+            binding.button.setOnClickListener {
                 mActionListener?.onClicked(this)
             }
-
         }
     }
 

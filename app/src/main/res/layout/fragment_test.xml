@@ -61,7 +61,7 @@
                 android:layout_centerInParent="true"
                 android:text="@string/txt_confirm_dialog"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_14sdp"
+                android:textSize="@dimen/text_button_uppercase"
                 android:textStyle="bold" />
 
         </RelativeLayout>

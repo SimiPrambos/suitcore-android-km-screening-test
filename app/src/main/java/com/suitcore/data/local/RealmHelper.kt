@@ -39,9 +39,9 @@ class RealmHelper<T : RealmObject> {
         return validData
     }
 
-    fun getData(data: Class<T>): RealmResults<T>? {
+    fun getData(data: Class<T>, distinctField: String): RealmResults<T>? {
         val realm: Realm = Realm.getDefaultInstance()
-        val cache: RealmResults<T>? = realm.where(data).findAll()
+        val cache: RealmResults<T>? = realm.where(data).distinct(distinctField).findAll()
         var validData: RealmResults<T>? = null
         if(cache != null && cache.isValid){
             validData = cache

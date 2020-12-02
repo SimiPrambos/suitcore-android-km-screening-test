@@ -1,11 +1,14 @@
 package com.suitcore.feature.sidemenu
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.suitcore.R
 import com.suitcore.base.ui.adapter.BaseRecyclerAdapter
 import com.suitcore.data.model.SideMenu
+import com.suitcore.databinding.ItemMemberBinding
+import com.suitcore.databinding.ItemSideMenuBinding
 
 /**
  * Created by dodydmw19 on 1/3/19.
@@ -13,6 +16,7 @@ import com.suitcore.data.model.SideMenu
 
 class SideMenuAdapter(var context: Context?) : BaseRecyclerAdapter<SideMenu, SideMenuItemView>() {
 
+    private lateinit var itemSideMenuBinding: ItemSideMenuBinding
     private var mOnActionListener: SideMenuItemView.OnActionListener? = null
 
     fun setOnActionListener(onActionListener: SideMenuItemView.OnActionListener) {
@@ -25,10 +29,9 @@ class SideMenuAdapter(var context: Context?) : BaseRecyclerAdapter<SideMenu, Sid
             notifyDataSetChanged()
         }
 
-    override fun getItemResourceLayout(): Int = R.layout.item_side_menu
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SideMenuItemView {
-        val view = SideMenuItemView(getView(parent))
+        itemSideMenuBinding = ItemSideMenuBinding.inflate(LayoutInflater.from(context) , parent,false)
+        val view = SideMenuItemView(itemSideMenuBinding)
         mOnActionListener?.let { view.setOnActionListener(it) }
         return view
     }

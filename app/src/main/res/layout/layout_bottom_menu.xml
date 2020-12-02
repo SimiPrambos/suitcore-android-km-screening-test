@@ -9,7 +9,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-        android:id="@+id/linBottomNav"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_38sdp"
         android:layout_alignParentBottom="true"

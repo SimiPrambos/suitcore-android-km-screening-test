@@ -8,31 +8,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.suitcore.base.presenter.MvpView
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
-import com.suitcore.helper.CommonLoadingDialog
 
-abstract class BaseFragment : Fragment(), MvpView {
+abstract class BaseFragment: Fragment(), MvpView {
 
-    private var mContext: Context? = null
-    private lateinit var mBaseActivity: BaseActivity
-    private var mInflater: LayoutInflater? = null
-    private var mCommonLoadingDialog: CommonLoadingDialog? = null
-    protected abstract val resourceLayout: Int
+    private var baseActivity: BaseActivity? = null
+    protected open var binding: ViewBinding? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mContext = activity
+    abstract fun setBinding(inflater: LayoutInflater, container: ViewGroup?): ViewBinding
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         if (context is BaseActivity) {
-            mBaseActivity = mContext as BaseActivity
-            mInflater = LayoutInflater.from(mBaseActivity)
-        } else {
-            throw ClassCastException("The activity is not child of BaseActivity")
+            baseActivity = context
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return mInflater?.inflate(resourceLayout, container, false)
+        this.binding = this.setBinding(inflater, container)
+        return binding?.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -42,22 +38,25 @@ abstract class BaseFragment : Fragment(), MvpView {
 
     protected abstract fun onViewReady(savedInstanceState: Bundle?)
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
     protected fun showToast(message: String) {
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(baseActivity, message, Toast.LENGTH_SHORT).show()
     }
 
     fun goToActivity(actDestination: Class<out Activity>, data: Bundle?, clearIntent: Boolean, isFinish: Boolean) {
-        mBaseActivity.goToActivity(actDestination, data, clearIntent, isFinish)
+        baseActivity?.goToActivity(actDestination, data, clearIntent, isFinish)
     }
 
-    fun goToActivity(resultCode: Int, actDestination: Class<out Activity>,data: Bundle?) {
-        mBaseActivity.goToActivity(resultCode, actDestination, data)
+    fun goToActivity(resultCode: Int, actDestination: Class<out Activity>, data: Bundle?) {
+        baseActivity?.goToActivity(resultCode, actDestination, data)
     }
 
-    override fun showLoading(isBackPressedCancelable: Boolean, message: String?, currentPage: Int?) {
-        if (currentPage == 1) {
-            mBaseActivity.showLoading(isBackPressedCancelable, message)
-        }
+    override fun showLoading(isBackPressedCancelable: Boolean, message: String?) {
+        baseActivity?.showLoading(isBackPressedCancelable, message)
     }
 
     override fun showLoadingWithText(msg: String) {
@@ -69,35 +68,35 @@ abstract class BaseFragment : Fragment(), MvpView {
     }
 
     override fun hideLoading() {
-        mCommonLoadingDialog?.dismiss()
+        baseActivity?.hideLoading()
     }
 
     override fun showConfirmationDialog(message: String, confirmCallback: () -> Unit) {
-        mBaseActivity.showConfirmationDialog(message, confirmCallback)
+        baseActivity?.showConfirmationDialog(message, confirmCallback)
     }
 
     override fun showConfirmationSingleDialog(message: String, confirmCallback: () -> Unit) {
-        mBaseActivity.showConfirmationSingleDialog(message, confirmCallback)
+        baseActivity?.showConfirmationSingleDialog(message, confirmCallback)
     }
 
     override fun showConfirmationDialog(message: Int, confirmCallback: () -> Unit) {
-        mBaseActivity.showConfirmationDialog(message, confirmCallback)
+        baseActivity?.showConfirmationDialog(message, confirmCallback)
     }
 
     override fun showAlertDialog(message: String) {
-        mBaseActivity.showAlertDialog(message)
+        baseActivity?.showAlertDialog(message)
     }
 
     override fun showAlertDialog(message: Int) {
-        mBaseActivity.showAlertDialog(message)
+        baseActivity?.showAlertDialog(message)
     }
 
     fun finishLoad(recycler: BaseRecyclerView?) {
-        mBaseActivity.finishLoad(recycler)
+        baseActivity?.finishLoad(recycler)
     }
 
     fun clearRecyclerView(recyclerView: BaseRecyclerView?) {
-        mBaseActivity.clearRecyclerView(recyclerView)
+        baseActivity?.clearRecyclerView(recyclerView)
     }
 
 }

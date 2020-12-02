@@ -33,7 +33,7 @@ class SearchPlacePresenter(var context: Context?) : BasePresenter<SearchPlaceVie
 
     fun searchPlaces(keyword: String?) {
 
-        val url: String? = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + keyword + ".json" +
+        val url: String = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + keyword + ".json" +
                 "?access_token=" + CommonConstant.MAP_BOX_TOKEN
 
         mCompositeDisposable?.add(

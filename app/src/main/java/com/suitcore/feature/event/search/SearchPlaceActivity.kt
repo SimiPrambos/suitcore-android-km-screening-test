@@ -5,7 +5,9 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
+import androidx.viewbinding.ViewBinding
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -16,12 +18,12 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions
-import com.suitcore.base.ui.BaseActivity
-import com.twitter.sdk.android.core.models.Place
 import com.suitcore.R
+import com.suitcore.base.ui.BaseActivity
+import com.suitcore.databinding.ActivitySearchPlaceBinding
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
-import kotlinx.android.synthetic.main.activity_search_place.*
+import com.twitter.sdk.android.core.models.Place
 
 /**
  * Created by dodydmw19 on 1/14/19.
@@ -37,16 +39,22 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
     private var mapBox: MapboxMap? = null
     private var symbolManager: SymbolManager? = null
     private var symbol: Symbol? = null
-    private var MARKER = "marker"
+    private var marker = "marker"
 
     private var currentLocation: LatLng? = null
-
     private var isFirstTime = true
 
-    override val resourceLayout: Int = R.layout.activity_search_place
+    private lateinit var searchPlaceBinding: ActivitySearchPlaceBinding
+
+    override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
+
+    private fun initBinding(layoutInflater: LayoutInflater) : ViewBinding {
+        searchPlaceBinding = ActivitySearchPlaceBinding.inflate(layoutInflater)
+        return searchPlaceBinding
+    }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
-        setupToolbar(mToolbar, true)
+        setupToolbar(searchPlaceBinding.mToolbar, true)
         setupPresenter()
         setupMap()
         actionClick()
@@ -58,11 +66,11 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
     }
 
     private fun setupMap() {
-        mapEvent.getMapAsync { mapBoxMap ->
+        searchPlaceBinding.mapEvent.getMapAsync { mapBoxMap ->
             this.mapBox = mapBoxMap
             mapBoxMap.setStyle(Style.MAPBOX_STREETS) { style ->
-                style.addImage(MARKER, BitmapFactory.decodeResource(this.resources, R.drawable.ic_pick_location))
-                symbolManager = SymbolManager(mapEvent, mapBoxMap, style, null, null)
+                style.addImage(marker, BitmapFactory.decodeResource(this.resources, R.drawable.ic_pick_location))
+                symbolManager = SymbolManager(searchPlaceBinding.mapEvent, mapBoxMap, style, null, null)
                 symbolManager?.iconAllowOverlap = true
 
                 mapBoxMap.uiSettings.isCompassEnabled = false
@@ -78,7 +86,7 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
         if (isFirstTime) {
             val symbolOptions = SymbolOptions()
                     .withLatLng(LatLng(point.latitude, point.longitude))
-                    .withIconImage(MARKER)
+                    .withIconImage(marker)
 
             symbol = symbolManager?.create(symbolOptions)
             isFirstTime = false
@@ -97,7 +105,7 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
         currentLocation = LatLng()
         currentLocation?.latitude = latitude
         currentLocation?.longitude = longitude
-        relSubmit.setBackgroundResource(R.drawable.bg_button_rounded_green)
+        searchPlaceBinding.relSubmit.setBackgroundResource(R.drawable.bg_button_rounded_green)
     }
 
     override fun onPlaceReceive(places: List<Place>?) {
@@ -111,7 +119,7 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
 
     override fun onAddressReceive(address: String?) {
         address?.let { it ->
-            tvAddress.text = it
+            searchPlaceBinding.tvAddress.text = it
         }
     }
 
@@ -132,15 +140,14 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
                     val feature: CarmenFeature? = PlaceAutocomplete.getPlace(data)
                     feature?.let{
                         addSymbol(LatLng((it.geometry() as Point).latitude(), (it.geometry() as Point).longitude()))
-                        tvAddress.text = it.text().toString()
+                        searchPlaceBinding.tvAddress.text = it.text().toString()
                     }
                 }
         }
     }
 
     private fun actionClick() {
-
-        relSearch.setOnClickListener{
+        searchPlaceBinding.relSearch.setOnClickListener{
             val intent = PlaceAutocomplete.IntentBuilder()
                     .accessToken(CommonConstant.MAP_BOX_TOKEN)
                     .placeOptions(PlaceOptions.builder()
@@ -152,14 +159,14 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
             startActivityForResult(intent, 101)
         }
 
-        tvClear.setOnClickListener {
+        searchPlaceBinding.tvClear.setOnClickListener {
            // actPlaceName.text.clear()
         }
 
-        relSubmit.setOnClickListener {
-            if (currentLocation != null && currentLocation?.latitude != null && currentLocation?.longitude != null) {
-
-            }
+        searchPlaceBinding.relSubmit.setOnClickListener {
+//            if (currentLocation != null && currentLocation?.latitude != null && currentLocation?.longitude != null) {
+//
+//            }
         }
     }
 

@@ -1,16 +1,15 @@
 package com.suitcore.feature.sidemenu
 
-import android.view.View
 import android.widget.TextView
 import com.suitcore.base.ui.adapter.viewholder.BaseItemViewHolder
 import com.suitcore.data.model.SideMenu
-import kotlinx.android.synthetic.main.item_side_menu.view.*
+import com.suitcore.databinding.ItemSideMenuBinding
 
 /**
  * Created by dodydmw19 on 1/3/19.
  */
 
-class SideMenuItemView(itemView: View) : BaseItemViewHolder<SideMenu>(itemView) {
+class SideMenuItemView(var binding: ItemSideMenuBinding) : BaseItemViewHolder<SideMenu>(binding) {
 
     private var mActionListener: OnActionListener? = null
     private var sideMenu: SideMenu? = null
@@ -18,9 +17,9 @@ class SideMenuItemView(itemView: View) : BaseItemViewHolder<SideMenu>(itemView) 
     override fun bind(data: SideMenu?) {
         data?.let {
             sideMenu = data
-            itemView.textViewMenuTitle.text = data.label
+            binding.textViewMenuTitle.text = data.label
 
-            itemView.linearLayoutBackground?.setOnClickListener {
+            binding.linearLayoutBackground?.setOnClickListener {
                 if (mActionListener != null) {
                     mActionListener?.onClicked(this, adapterPosition - 1)
                 }
@@ -29,7 +28,7 @@ class SideMenuItemView(itemView: View) : BaseItemViewHolder<SideMenu>(itemView) 
     }
 
     fun getTitleView(): TextView {
-        return itemView.textViewMenuTitle
+        return binding.textViewMenuTitle
     }
 
     fun getData() : SideMenu?{
