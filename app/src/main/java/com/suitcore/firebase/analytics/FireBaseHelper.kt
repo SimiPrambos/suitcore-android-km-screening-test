@@ -1,36 +1,41 @@
 package com.suitcore.firebase.analytics
 
-import android.app.Activity
 import android.content.Context
-import android.os.Bundle
-
 import com.google.firebase.analytics.FirebaseAnalytics
 
 /**
- * Created by DODYDMW19 on 10/19/2017.
+ * Created by DODYDMW19 on 12/03/2020.
  */
 
 class FireBaseHelper {
 
-    private var mFirebaseAnalytics: FirebaseAnalytics? = null
+    private var firebaseAnalytics: FirebaseAnalytics? = null
 
     fun initialize(context: Context?) {
         // Obtain the FirebaseAnalytics instance.
         if (context != null) {
-            mFirebaseAnalytics = FirebaseAnalytics.getInstance(context)
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context)
         }
     }
 
-    fun sendScreen(screenName: String, act: Activity?) {
-        if (act != null && mFirebaseAnalytics != null) {
-            mFirebaseAnalytics!!.setCurrentScreen(act, screenName, act.localClassName)
-        }
-    }
+    /* firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+       param(FirebaseAnalytics.Param.SCREEN_NAME, screenName)
+       param(FirebaseAnalytics.Param.SCREEN_CLASS, "MainActivity")
+   }*/
 
-    fun sendEvent(eventName: String, data: Bundle) {
-        if (mFirebaseAnalytics != null) {
-            mFirebaseAnalytics!!.logEvent(eventName, data)
-        }
+    /*  firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+        param(FirebaseAnalytics.Param.ITEM_ID, id)
+        param(FirebaseAnalytics.Param.ITEM_NAME, name)
+        param(FirebaseAnalytics.Param.CONTENT_TYPE, "image")
+    }*/
+
+    /* firebaseAnalytics.logEvent("share_image") {
+        param("image_name", name)
+        param("full_text", text)
+    }*/
+
+    fun getFireBaseAnalytics(): FirebaseAnalytics?{
+        return firebaseAnalytics
     }
 
     companion object {

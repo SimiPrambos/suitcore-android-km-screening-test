@@ -8,11 +8,15 @@ import android.view.LayoutInflater
 import android.view.Window
 import androidx.appcompat.app.AlertDialog
 import androidx.viewbinding.ViewBinding
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
 import com.suitcore.databinding.ActivityLoginBinding
 import com.suitcore.feature.sidemenu.SideMenuActivity
 import com.suitcore.feature.tabmenu.TabMenuActivity
+import com.suitcore.firebase.analytics.FireBaseConstant
+import com.suitcore.firebase.analytics.FireBaseHelper
 import com.suitcore.firebase.remoteconfig.RemoteConfigHelper
 import com.suitcore.firebase.remoteconfig.RemoteConfigPresenter
 import com.suitcore.firebase.remoteconfig.RemoteConfigView
@@ -56,8 +60,16 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
 
     override fun onResume() {
         super.onResume()
+        sendAnalytics()
         remoteConfigPresenter?.checkUpdate(CommonConstant.CHECK_APP_VERSION) // check app version and notify update from remote config
         remoteConfigPresenter?.checkUpdate(CommonConstant.CHECK_BASE_URL) // check base url from remote config if any changes
+    }
+
+    private fun sendAnalytics(){
+        FireBaseHelper.instance().getFireBaseAnalytics()?.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW){
+            param(FirebaseAnalytics.Param.SCREEN_NAME, FireBaseConstant.SCREEN_LOGIN)
+            param(FirebaseAnalytics.Param.SCREEN_CLASS, LoginActivity::class.java.simpleName)
+        }
     }
 
     private fun setupPresenter() {

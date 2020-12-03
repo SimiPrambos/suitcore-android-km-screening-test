@@ -57,7 +57,6 @@ class MemberFragment : BaseFragment(), MemberView, MemberItemView.OnActionListen
         memberPresenter = MemberPresenter()
         memberPresenter?.attachView(this)
         memberPresenter?.getMemberCache()
-        memberPresenter?.getMember(currentPage)
     }
 
     private fun setupList() {
@@ -151,6 +150,7 @@ class MemberFragment : BaseFragment(), MemberView, MemberItemView.OnActionListen
             }
         }
         finishLoad(memberBinding.rvMember)
+        loadData(currentPage)
     }
 
     override fun onMemberLoaded(members: List<User>?) {

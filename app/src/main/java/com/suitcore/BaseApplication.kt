@@ -12,6 +12,7 @@ import com.suitcore.data.local.prefs.SuitPreferences
 import com.suitcore.di.component.ApplicationComponent
 import com.suitcore.di.component.DaggerApplicationComponent
 import com.suitcore.di.module.ApplicationModule
+import com.suitcore.firebase.analytics.FireBaseHelper
 import com.suitcore.helper.ActivityLifecycleCallbacks
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
@@ -51,6 +52,7 @@ class BaseApplication : MultiDexApplication() {
 
         // Initial Preferences
         SuitPreferences.init(applicationContext)
+        FireBaseHelper.instance().initialize(this)
 
         CommonUtils.setDefaultBaseUrlIfNeeded()
 
