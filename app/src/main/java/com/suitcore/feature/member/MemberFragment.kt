@@ -83,7 +83,7 @@ class MemberFragment : BaseFragment(), MemberView, MemberItemView.OnActionListen
     }
 
     private fun loadData(page: Int) {
-        memberPresenter?.getMember(page)
+        memberPresenter?.getMemberWithCoroutines(page)
     }
 
     private fun setData(data: List<User>?) {

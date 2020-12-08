@@ -6,6 +6,7 @@ import com.suitcore.data.remote.wrapper.Results
 import com.twitter.sdk.android.core.models.Place
 import io.reactivex.Flowable
 import io.reactivex.Single
+import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
@@ -20,6 +21,11 @@ interface APIService {
     fun getMembers(
             @Query("per_page") perPage: Int,
             @Query("page") page: Int): Single<Results<User>>
+
+    @GET("users")
+    fun getMembersCoroutinesAsync(
+            @Query("per_page") perPage: Int,
+            @Query("page") page: Int): Deferred<Results<User>>
 
     @GET
     fun searchPlace(@Url url: String?): Flowable<MapBoxResults<Place>>

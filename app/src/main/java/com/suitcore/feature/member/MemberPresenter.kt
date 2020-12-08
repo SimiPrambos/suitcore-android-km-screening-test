@@ -11,19 +11,26 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.RealmResults
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by DODYDMW19 on 1/30/2018.
  */
 
-class MemberPresenter : BasePresenter<MemberView> {
+class MemberPresenter : BasePresenter<MemberView> , CoroutineScope {
 
     @Inject
     lateinit var apiService: APIService
     private var mvpView: MemberView? = null
     private var mRealm: RealmHelper<User>? = RealmHelper()
     private var mCompositeDisposable: CompositeDisposable? = CompositeDisposable()
+    override val coroutineContext: CoroutineContext get() =  Dispatchers.IO + job
+    private var job: Job = Job()
 
     init {
         BaseApplication.applicationComponent.inject(this)
@@ -36,33 +43,58 @@ class MemberPresenter : BasePresenter<MemberView> {
         mvpView?.onMemberCacheLoaded(data)
     }
 
-    fun getMember(currentPage: Int?) {
-        mCompositeDisposable?.add(
-                apiService.getMembers(10, currentPage!!)
-                        .map {
-                            saveToCache(it.arrayData, currentPage)
-                            it
-                        }
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({ data ->
-                            if (data != null) {
-                                if (currentPage == 1) {
-                                    if (data.arrayData?.isNotEmpty()!!) {
-                                        mvpView?.onMemberLoaded(data.arrayData!!)
-                                    } else {
-                                        mvpView?.onMemberEmpty()
-                                    }
-                                } else {
-                                    mvpView?.onMemberLoaded(data.arrayData!!)
-                                }
-                            } else {
-                                mvpView?.onFailed(R.string.txt_error_global)
-                            }
-                        }, {
-                            mvpView?.onFailed(it)
-                        })
-        )
+//    fun getMemberWithRx(currentPage: Int?) {
+//        mCompositeDisposable?.add(
+//                apiService.getMembers(10, currentPage!!)
+//                        .map {
+//                            saveToCache(it.arrayData, currentPage)
+//                            it
+//                        }
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribeOn(Schedulers.io())
+//                        .subscribe({ data ->
+//                            if (data != null) {
+//                                if (currentPage == 1) {
+//                                    if (data.arrayData?.isNotEmpty()!!) {
+//                                        mvpView?.onMemberLoaded(data.arrayData!!)
+//                                    } else {
+//                                        mvpView?.onMemberEmpty()
+//                                    }
+//                                } else {
+//                                    mvpView?.onMemberLoaded(data.arrayData!!)
+//                                }
+//                            } else {
+//                                mvpView?.onFailed(R.string.txt_error_global)
+//                            }
+//                        }, {
+//                            mvpView?.onFailed(it)
+//                        })
+//        )
+//    }
+
+    fun getMemberWithCoroutines(currentPage: Int?) = launch(Dispatchers.Main) {
+        runCatching {
+            apiService.getMembersCoroutinesAsync(10, currentPage!!).await()
+        }.onSuccess { data ->
+            if (data.arrayData?.isNotEmpty()!!) {
+                val rest = data.arrayData
+                runCatching{
+                    saveToCache(data.arrayData, currentPage)
+                }.onSuccess {
+                    mvpView?.onMemberLoaded(rest)
+                }.onFailure {
+                    mvpView?.onFailed(it)
+                }
+            } else {
+                if(currentPage == 1) {
+                    mvpView?.onMemberEmpty()
+                }else{
+                    mvpView?.onMemberLoaded(emptyList())
+                }
+            }
+        }.onFailure {
+            mvpView?.onFailed(it)
+        }
     }
 
     private fun saveToCache(data: List<User>?, currentPage: Int?) {
@@ -93,4 +125,6 @@ class MemberPresenter : BasePresenter<MemberView> {
         mvpView = null
         mCompositeDisposable.let { mCompositeDisposable?.clear() }
     }
+
+
 }

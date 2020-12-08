@@ -2,7 +2,7 @@ package com.suitcore.data.remote.services
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.suitcore.BaseApplication
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.suitcore.BuildConfig
 import com.suitcore.data.local.prefs.DataConstant
 import com.suitcore.data.local.prefs.SuitPreferences
@@ -34,6 +34,7 @@ object BaseServiceFactory {
                 .baseUrl(url)
                 .client(provideOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(gSon))
+                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 
