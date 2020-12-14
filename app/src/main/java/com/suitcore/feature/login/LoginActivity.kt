@@ -12,6 +12,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
+import com.suitcore.data.local.prefs.DataConstant
+import com.suitcore.data.local.prefs.SuitPreferences
 import com.suitcore.databinding.ActivityLoginBinding
 import com.suitcore.feature.sidemenu.SideMenuActivity
 import com.suitcore.feature.tabmenu.TabMenuActivity
@@ -42,11 +44,11 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
     private var mGoogleHelper: GoogleSignInHelper? = null
     private var mTwitterHelper: TwitterHelper? = null
     private var mFbHelper: FacebookHelper? = null
-    private lateinit var loginBinding : ActivityLoginBinding
+    private lateinit var loginBinding: ActivityLoginBinding
 
     override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
 
-    private fun initBinding(layoutInflater: LayoutInflater) : ViewBinding {
+    private fun initBinding(layoutInflater: LayoutInflater): ViewBinding {
         loginBinding = ActivityLoginBinding.inflate(layoutInflater)
         return loginBinding
     }
@@ -63,10 +65,11 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
         sendAnalytics()
         remoteConfigPresenter?.checkUpdate(CommonConstant.CHECK_APP_VERSION) // check app version and notify update from remote config
         remoteConfigPresenter?.checkUpdate(CommonConstant.CHECK_BASE_URL) // check base url from remote config if any changes
+
     }
 
-    private fun sendAnalytics(){
-        FireBaseHelper.instance().getFireBaseAnalytics()?.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW){
+    private fun sendAnalytics() {
+        FireBaseHelper.instance().getFireBaseAnalytics()?.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
             param(FirebaseAnalytics.Param.SCREEN_NAME, FireBaseConstant.SCREEN_LOGIN)
             param(FirebaseAnalytics.Param.SCREEN_CLASS, LoginActivity::class.java.simpleName)
         }
@@ -75,6 +78,9 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
     private fun setupPresenter() {
         loginPresenter = LoginPresenter()
         loginPresenter?.attachView(this)
+
+        remoteConfigPresenter = RemoteConfigPresenter()
+        remoteConfigPresenter?.attachView(this)
     }
 
     private fun needPermissions() {
@@ -178,12 +184,25 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
                             d.dismiss()
                             CommonUtils.openAppInStore(this)
                         }
-                        .setNegativeButton("CANCEL") { d, _ -> d.dismiss() }
+                        .setNegativeButton("CANCEL") { d, _ ->
+                            d.dismiss()
+                            if (SuitPreferences.instance()?.getString(DataConstant.IS_LOGIN) != null
+                                    && SuitPreferences.instance()?.getString(DataConstant.IS_LOGIN) == "true") {
+                                //goToActivity(MainActivity::class.java, null, clearIntent = true, isFinish = true)
+                            }
+                        }
                         .create()
 
                 confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 confirmDialog.show()
             }
+        }
+    }
+
+    override fun onNoUpdateAppNeeded(message: String?) {
+        if (SuitPreferences.instance()?.getString(DataConstant.IS_LOGIN) != null
+                && SuitPreferences.instance()?.getString(DataConstant.IS_LOGIN) == "true") {
+            //goToActivity(MainActivity::class.java, null, clearIntent = true, isFinish = true)
         }
     }
 

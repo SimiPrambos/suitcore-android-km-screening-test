@@ -12,6 +12,7 @@ object DataConstant {
     const val RANDOM_KEY = "random_key"
     const val PLAYER_ID = "player_id"
     const val BASE_URL = "base_url"
+    const val IS_LOGIN = "is_login"
 
 
 }

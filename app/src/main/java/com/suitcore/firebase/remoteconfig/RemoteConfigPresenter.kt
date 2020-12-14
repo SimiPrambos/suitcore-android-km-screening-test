@@ -113,19 +113,15 @@ class RemoteConfigPresenter : BasePresenter<RemoteConfigView> {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-            return
-        }
-
-        if (normalUpdateVersion != 0.0 && currentVersion < normalUpdateVersion!!) {
+        } else if (normalUpdateVersion != 0.0 && currentVersion < normalUpdateVersion!!) {
             try {
                 messages = mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_NORMAL_MESSAGE).toString()
                 mvpView?.onUpdateAppNeeded(false, messages)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-            return
+        } else {
+            mvpView?.onNoUpdateAppNeeded("")
         }
     }
 
