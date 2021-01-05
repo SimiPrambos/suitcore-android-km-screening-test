@@ -2,14 +2,11 @@ package com.suitcore.feature.member
 
 import androidx.lifecycle.LifecycleOwner
 import com.suitcore.BaseApplication
-import com.suitcore.R
 import com.suitcore.base.presenter.BasePresenter
 import com.suitcore.data.local.RealmHelper
 import com.suitcore.data.model.User
 import com.suitcore.data.remote.services.APIService
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import io.realm.RealmResults
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

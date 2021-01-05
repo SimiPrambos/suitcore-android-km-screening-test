@@ -76,6 +76,7 @@ class RemoteConfigPresenter : BasePresenter<RemoteConfigView> {
                 }
     }
 
+
     private fun checkVersion() {
         val currentVersion = java.lang.Double.valueOf(BuildConfig.VERSION_CODE.toDouble())
         var normalUpdateVersion: Double? = 0.0
