@@ -8,7 +8,7 @@ import com.suitcore.databinding.ItemMemberBinding
 /**
  * Created by DODYDMW19 on 1/30/2018.
  */
-class MemberItemView(var binding: ItemMemberBinding) : BaseItemViewHolder<User>(binding) {
+class SingleMemberItemView(var binding: ItemMemberBinding) : BaseItemViewHolder<User>(binding) {
 
     private var mActionListener: OnActionListener? = null
     private var user: User? = null
@@ -27,7 +27,7 @@ class MemberItemView(var binding: ItemMemberBinding) : BaseItemViewHolder<User>(
         }
     }
 
-    fun getData(): User {
+    fun getData(): User { 
         return user!!
     }
 
@@ -36,6 +36,6 @@ class MemberItemView(var binding: ItemMemberBinding) : BaseItemViewHolder<User>(
     }
 
     interface OnActionListener {
-        fun onClicked(view: MemberItemView?)
+        fun onClicked(view: SingleMemberItemView?)
     }
 }

@@ -13,7 +13,8 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.4' // google-services plugin
         classpath "io.realm:realm-gradle-plugin:6.0.2"
-        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.12.9'
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.12.10'
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:8.2.0"
     }
 }
 

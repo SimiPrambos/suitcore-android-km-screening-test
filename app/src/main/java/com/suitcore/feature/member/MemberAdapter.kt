@@ -11,18 +11,18 @@ import com.suitcore.databinding.ItemMemberBinding
  * Created by DODYDMW19 on 1/30/2018.
  */
 
-class MemberAdapter(var context: Context) : BaseRecyclerAdapter<User, MemberItemView>() {
+class MemberAdapter(var context: Context) : BaseRecyclerAdapter<User, SingleMemberItemView>() {
 
     private lateinit var itemMemberBinding: ItemMemberBinding
-    private var mOnActionListener: MemberItemView.OnActionListener? = null
+    private var mOnActionListener: SingleMemberItemView.OnActionListener? = null
 
-    fun setOnActionListener(onActionListener: MemberItemView.OnActionListener) {
+    fun setOnActionListener(onActionListener: SingleMemberItemView.OnActionListener) {
         mOnActionListener = onActionListener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : MemberItemView{
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : SingleMemberItemView{
         itemMemberBinding = ItemMemberBinding.inflate(LayoutInflater.from(context) , parent,false)
-        val view = MemberItemView(itemMemberBinding)
+        val view = SingleMemberItemView(itemMemberBinding)
         mOnActionListener?.let { view.setOnActionListener(it) }
         return view
     }

@@ -20,11 +20,11 @@ import io.realm.RealmResults
  * Created by DODYDMW19 on 1/30/2018.
  */
 
-class MemberFragment : BaseFragment(), MemberView, MemberItemView.OnActionListener {
+class MemberFragment : BaseFragment(), MemberView, MultiTypeMemberItemViewFirst.OnActionListener, MultiTypeMemberItemViewSecond.OnActionListener {
 
     private var memberPresenter: MemberPresenter? = null
     private var currentPage: Int = 1
-    private var memberAdapter: MemberAdapter? = null
+    private var memberAdapter: MemberMultiTypeAdapter? = null
     private lateinit var memberBinding: FragmentMemberBinding
 
     companion object {
@@ -60,7 +60,7 @@ class MemberFragment : BaseFragment(), MemberView, MemberItemView.OnActionListen
     }
 
     private fun setupList() {
-        memberAdapter = context?.let { MemberAdapter(it) }
+        memberAdapter = context?.let { MemberMultiTypeAdapter(it) }
         memberBinding.rvMember.apply {
             setUpAsList()
             setAdapter(memberAdapter)
@@ -79,6 +79,7 @@ class MemberFragment : BaseFragment(), MemberView, MemberItemView.OnActionListen
             })
         }
         memberAdapter?.setOnActionListener(this)
+        memberAdapter?.setOnActionListener2(this)
         memberBinding.rvMember.showShimmer()
     }
 
@@ -172,7 +173,13 @@ class MemberFragment : BaseFragment(), MemberView, MemberItemView.OnActionListen
     }
 
 
-    override fun onClicked(view: MemberItemView?) {
+    override fun onClicked(view: MultiTypeMemberItemViewFirst?) {
+        view?.getData()?.let {
+            showToast(it.firstName.toString())
+        }
+    }
+
+    override fun onClicked(view: MultiTypeMemberItemViewSecond?) {
         view?.getData()?.let {
             showToast(it.firstName.toString())
         }

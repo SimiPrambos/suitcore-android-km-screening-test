@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
-
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 android {
     def date = new Date()
@@ -62,6 +62,25 @@ android {
         viewBinding true
     }
 
+    ktlint {
+        debug.set(true)
+        verbose.set(true)
+        android.set(false)
+        outputToConsole.set(true)
+        ignoreFailures.set(true)
+        kotlinScriptAdditionalPaths {
+            include(fileTree("scripts/"))
+        }
+        filter {
+            exclude("**/generated/**")
+            include("**/kotlin/**")
+        }
+    }
+
+}
+
+subprojects {
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
 }
 
 dependencies {
@@ -138,7 +157,7 @@ dependencies {
     implementation 'com.twitter.sdk.android:twitter:3.3.0'
 
     //----- Image Loader
-    implementation 'com.facebook.fresco:fresco:2.2.0'
+    implementation 'com.facebook.fresco:fresco:2.3.0'
 
     //----- RecyclerView
     implementation 'com.jcodecraeer:xrecyclerview:1.6.0'
