@@ -3,7 +3,9 @@ package com.suitcore.feature.fragmentsample
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
+import com.suitcore.R
 import com.suitcore.base.ui.BaseFragment
 import com.suitcore.databinding.FragmentTestBinding
 
@@ -37,11 +39,25 @@ class SampleFragment : BaseFragment() {
 
     private fun actionClicked() {
         sampleBinding.relAlertDialog.setOnClickListener {
-            showAlertDialog("test")
+            showAlertDialog("old Alert")
         }
 
         sampleBinding.relCondirmDialog.setOnClickListener {
-            showConfirmationDialog("test", actionClicked)
+            showConfirmationDialog("old Confirmation", actionClicked)
+        }
+
+        sampleBinding.relNewAlertDialog.setOnClickListener {
+            showDialogAlert(null,"New Alert")
+        }
+        sampleBinding.relNewConfirmDialog.setOnClickListener {
+            showDialogConfirmation(null,"New Confirmation",confirmCallback = {
+                showDialogLoading(true,null)
+            })
+        }
+        sampleBinding.relNewContentDialog.setOnClickListener {
+            showDialogCustomLayout(false,R.layout.img_suitcore_filter,confirmCallback = {
+                showDialogLoading(true,"After Custom Layout")
+            })
         }
     }
 

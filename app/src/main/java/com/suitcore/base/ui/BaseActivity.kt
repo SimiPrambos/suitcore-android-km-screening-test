@@ -11,15 +11,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.suitcore.base.presenter.MvpView
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
+import com.suitcore.helper.BaseDialog
+import com.suitcore.helper.BaseDialogInterface
 import com.suitcore.helper.CommonDialogHelper
 import com.suitcore.helper.CommonLoadingDialog
 
@@ -31,6 +35,8 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     private var mActionBar: ActionBar? = null
     private var mCommonLoadingDialog: CommonLoadingDialog? = null
     private var activityIntent: Intent? = null
+    private var baseDialog: BaseDialog? = null
+    private var dismissDialog:Boolean = false
 
     private val baseFragmentManager: FragmentManager
         get() = super.getSupportFragmentManager()
@@ -182,6 +188,92 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     override fun showAlertDialog(message: Int) {
         val stringMessage = getString(message)
         showAlertDialog(stringMessage)
+    }
+
+    //Custom Dialog
+
+    override fun showDialogLoading(dismiss: Boolean, message: String?) {
+        dismissDialog = dismiss
+        baseDialog = BaseDialog.BuildBaseDialog()
+                .onBackpressedDismiss(dismiss)
+                .setContent(message)
+                .build(this)
+        hideSoftKeyboard()
+        baseDialog?.show()
+    }
+
+    override fun showDialogAlert(title: String?, message: String, confirmCallback: () -> Unit?, drawableImage: Int?){
+        dismissDialog = false
+        baseDialog = BaseDialog.BuildAlertDialog()
+                .onBackpressedDismiss(false)
+                .setTitle(title)
+                .setContent(message)
+                .setSubmitButtonText("OK")
+                .setImageContent(drawableImage)
+                .setListener(object : BaseDialogInterface {
+                    override fun onSubmitClick() {
+                        confirmCallback()
+                    }
+
+                    override fun onDismissClick() {
+
+                    }
+                })
+                .build(this)
+        hideSoftKeyboard()
+        baseDialog?.show()
+
+    }
+
+    override fun showDialogConfirmation(title: String?, message: String, confirmCallback: () -> Unit?, cancelCallback: ()-> Unit?, drawableImage: Int?){
+        dismissDialog = false
+        baseDialog = BaseDialog.BuildConfirmationDialog()
+                .onBackpressedDismiss(dismissDialog)
+                .setTitle(title)
+                .setContent(message)
+                .setImageContent(drawableImage)
+                .setSubmitButton("OK")
+                .setCancelButton("Cancel")
+                .setSingleButton(false)
+                .setListener(object : BaseDialogInterface {
+                    override fun onSubmitClick() {
+                        confirmCallback()
+                    }
+
+                    override fun onDismissClick() {
+                        cancelCallback()
+                    }
+                })
+                .build(this)
+        hideSoftKeyboard()
+        baseDialog?.show()
+    }
+
+    override fun showDialogCustomLayout(dismiss: Boolean, resourceLayout: Int, confirmCallback: () -> Unit?){
+        dismissDialog = dismiss
+        baseDialog = BaseDialog.BuildCustomViewDialog()
+                .onBackpressedDismiss(dismiss)
+                .setLayout(resourceLayout)
+                .setSubmitButton("OK")
+                .build(this)
+        hideSoftKeyboard()
+        baseDialog?.show()
+    }
+
+    private fun Activity.hideSoftKeyboard() {
+        currentFocus?.let {
+            val inputMethodManager = ContextCompat.getSystemService(this, InputMethodManager::class.java)!!
+            inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+    }
+
+    fun hideLoadings() {
+        if(baseDialog!=null){
+            if(baseDialog?.isShowing()!!){
+                baseDialog?.dismissDialog()
+            }
+        }
+//        coreDialog?.visibility = View.GONE
     }
 
     fun finishLoad(recycler: BaseRecyclerView?) {

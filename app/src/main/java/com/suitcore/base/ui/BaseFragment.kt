@@ -99,5 +99,22 @@ abstract class BaseFragment: Fragment(), MvpView {
         baseActivity?.clearRecyclerView(recyclerView)
     }
 
+    //Custom Dialog
+    override fun showDialogLoading(dismiss: Boolean, message: String?){
+        baseActivity?.showDialogLoading(dismiss,message)
+    }
+    override fun showDialogAlert(title: String?, message: String, confirmCallback: () -> Unit?, drawableImage: Int?){
+        baseActivity?.showDialogAlert(title,message,confirmCallback, drawableImage)
+    }
+
+    override fun showDialogConfirmation(title: String?, message: String, confirmCallback: () -> Unit?, cancelCallback: ()-> Unit?, drawableImage: Int?){
+        baseActivity?.showDialogConfirmation(title, message, confirmCallback, cancelCallback, drawableImage)
+    }
+
+    override fun showDialogCustomLayout(dismiss: Boolean, resourceLayout: Int, confirmCallback: () -> Unit?){
+        baseActivity?.showDialogCustomLayout(dismiss, resourceLayout, confirmCallback)
+    }
+
+
 }
 
