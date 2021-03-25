@@ -57,5 +57,12 @@
     <string name="txt_skip_to_side_menu">SKIP TO SIDE MENU</string>
     <string name="txt_button_login">Login</string>
     <string name="txt_toolbar_home">Home</string>
+    <string name="txt_yes">Yes</string>
+    <string name="txt_no">No</string>
+    <string name="txt_image_pop">Image Pop</string>
+    <string name="txt_new_confirm_image">New Confirm Image</string>
+    <string name="txt_new_confirmation">New Confirmation</string>
+    <string name="txt_new_alert_image">New Alert Image</string>
+    <string name="txt_new_alert">New Alert</string>
 
 </resources>
