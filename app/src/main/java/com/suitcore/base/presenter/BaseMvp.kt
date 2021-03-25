@@ -24,7 +24,7 @@ interface MvpView {
 
     //    Custom Dialog
     fun showDialogLoading(dismiss: Boolean = false, message: String?)
-    fun showDialogAlert(title: String?, message: String, confirmCallback: () -> Unit?={}, drawableImage: Int?=null)
-    fun showDialogConfirmation(title: String?, message: String, confirmCallback: () -> Unit?={}, cancelCallback: ()-> Unit? = {}, drawableImage: Int?=null)
-    fun showDialogCustomLayout(dismiss: Boolean, resourceLayout: Int, confirmCallback: () -> Unit?={})
+    fun showDialogAlert(title: String?, message: String?, confirmCallback: () -> Unit?={}, drawableImage: Int?=null)
+    fun showDialogConfirmation(title: String?, message: String?, confirmCallback: () -> Unit?={}, cancelCallback: ()-> Unit? = {}, drawableImage: Int?=null)
+    fun showDialogPopImage(drawableImage: Int?=null)
 }

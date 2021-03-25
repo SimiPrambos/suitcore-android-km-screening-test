@@ -202,7 +202,7 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
         baseDialog?.show()
     }
 
-    override fun showDialogAlert(title: String?, message: String, confirmCallback: () -> Unit?, drawableImage: Int?){
+    override fun showDialogAlert(title: String?, message: String?, confirmCallback: () -> Unit?, drawableImage: Int?){
         dismissDialog = false
         baseDialog = BaseDialog.BuildAlertDialog()
                 .onBackpressedDismiss(false)
@@ -225,15 +225,15 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
 
     }
 
-    override fun showDialogConfirmation(title: String?, message: String, confirmCallback: () -> Unit?, cancelCallback: ()-> Unit?, drawableImage: Int?){
+    override fun showDialogConfirmation(title: String?, message: String?, confirmCallback: () -> Unit?, cancelCallback: ()-> Unit?, drawableImage: Int?){
         dismissDialog = false
         baseDialog = BaseDialog.BuildConfirmationDialog()
                 .onBackpressedDismiss(dismissDialog)
                 .setTitle(title)
                 .setContent(message)
                 .setImageContent(drawableImage)
-                .setSubmitButton("OK")
-                .setCancelButton("Cancel")
+                .setSubmitButtonText("OK")
+                .setCancelButtonText("Cancel")
                 .setSingleButton(false)
                 .setListener(object : BaseDialogInterface {
                     override fun onSubmitClick() {
@@ -249,12 +249,13 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
         baseDialog?.show()
     }
 
-    override fun showDialogCustomLayout(dismiss: Boolean, resourceLayout: Int, confirmCallback: () -> Unit?){
-        dismissDialog = dismiss
-        baseDialog = BaseDialog.BuildCustomViewDialog()
-                .onBackpressedDismiss(dismiss)
-                .setLayout(resourceLayout)
-                .setSubmitButton("OK")
+    override fun showDialogPopImage(drawableImage: Int?) {
+        dismissDialog = false
+        baseDialog = BaseDialog.BuildAlertDialog()
+                .onBackpressedDismiss(dismissDialog)
+                .hideAllButton(true)
+                .showPanelButton(true)
+                .setImageContent(drawableImage)
                 .build(this)
         hideSoftKeyboard()
         baseDialog?.show()

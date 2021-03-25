@@ -47,17 +47,27 @@ class SampleFragment : BaseFragment() {
         }
 
         sampleBinding.relNewAlertDialog.setOnClickListener {
-            showDialogAlert(null,"New Alert")
+            showDialogAlert(title = null,message = "New Alert")
         }
+
+        sampleBinding.relNewImageAlertDialog.setOnClickListener {
+            showDialogAlert(title = null, message ="New Alert Image",drawableImage = R.drawable.ic_logo_suitcore_main)
+        }
+
         sampleBinding.relNewConfirmDialog.setOnClickListener {
-            showDialogConfirmation(null,"New Confirmation",confirmCallback = {
+            showDialogConfirmation(title = null, message ="New Confirmation Without Image", confirmCallback = {
                 showDialogLoading(true,null)
             })
         }
-        sampleBinding.relNewContentDialog.setOnClickListener {
-            showDialogCustomLayout(false,R.layout.img_suitcore_filter,confirmCallback = {
-                showDialogLoading(true,"After Custom Layout")
+
+        sampleBinding.relNewConfirmImageDialog.setOnClickListener {
+            showDialogConfirmation(title = null, message = "New Confirmation With Image", drawableImage = R.drawable.ic_logo_suitcore_main,confirmCallback = {
+                showDialogLoading(true,"Press back to dismiss")
             })
+        }
+
+        sampleBinding.relNewContentDialog.setOnClickListener {
+            showDialogPopImage(R.drawable.ic_logo_suitcore_main)
         }
     }
 
