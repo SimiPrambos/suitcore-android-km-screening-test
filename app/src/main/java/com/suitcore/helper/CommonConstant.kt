@@ -22,4 +22,12 @@ object CommonConstant {
     const val MENU_FRAGMENT_2 = "fragment-2"
     const val MENU_FRAGMENT_3 = "fragment-3"
 
+    // In-App Updates
+    enum class UpdateMode {
+        FLEXIBLE, IMMEDIATE
+    }
+
+    const val UPDATE_ERROR_START_APP_UPDATE_FLEXIBLE = 100
+    const val UPDATE_ERROR_START_APP_UPDATE_IMMEDIATE = 101
+
 }
