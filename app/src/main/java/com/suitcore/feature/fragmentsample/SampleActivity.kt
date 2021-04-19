@@ -53,8 +53,8 @@ class SampleActivity : BaseActivity(), InAppUpdateManager.InAppUpdateHandler {
         inAppUpdateManager = InAppUpdateManager.builder(this, 101)
                 ?.resumeUpdates(true) // Resume the update, if the update was stalled. Default is true
                 ?.mode(UpdateMode.FLEXIBLE)
-                ?.snackBarMessage("An update has just been downloaded.")
-                ?.snackBarAction("RESTART")
+                ?.snackBarMessage(getString(R.string.txt_update_completed))
+                ?.snackBarAction(getString(R.string.txt_button_restart))
                 ?.handler(this)
 
         inAppUpdateManager?.checkForAppUpdate()
@@ -86,7 +86,7 @@ class SampleActivity : BaseActivity(), InAppUpdateManager.InAppUpdateHandler {
             if (resultCode == RESULT_CANCELED) {
                 // If the update is cancelled by the user,
                 // you can request to start the update again.
-                inAppUpdateManager!!.checkForAppUpdate()
+                inAppUpdateManager?.checkForAppUpdate()
                 Timber.d("inappupdate", "Update flow failed! Result code: $resultCode")
             }
         }

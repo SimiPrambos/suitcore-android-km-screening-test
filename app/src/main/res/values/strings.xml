@@ -60,9 +60,15 @@
     <string name="txt_yes">Yes</string>
     <string name="txt_no">No</string>
     <string name="txt_image_pop">Image Pop</string>
-    <string name="txt_new_confirm_image">New Confirm Image</string>
-    <string name="txt_new_confirmation">New Confirmation</string>
-    <string name="txt_new_alert_image">New Alert Image</string>
-    <string name="txt_new_alert">New Alert</string>
+    <string name="txt_new_confirm_image">Confirm Image</string>
+    <string name="txt_new_confirmation">Confirmation</string>
+    <string name="txt_new_alert_image">Alert Image</string>
+    <string name="txt_new_alert">Alert</string>
+    <string name="txt_loading">Loading…</string>
+    <string name="txt_loading_with_info">Press back to dismiss</string>
+
+    <!-- In-App Updates -->
+    <string name="txt_update_completed">An update has just been downloaded.</string>
+    <string name="txt_button_restart">RESTART</string>
 
 </resources>

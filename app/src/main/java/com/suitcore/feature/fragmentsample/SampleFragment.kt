@@ -3,7 +3,6 @@ package com.suitcore.feature.fragmentsample
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.suitcore.R
 import com.suitcore.base.ui.BaseFragment
@@ -22,7 +21,6 @@ class SampleFragment : BaseFragment() {
     }
 
     private lateinit var sampleBinding: FragmentTestBinding
-    private val actionClicked = ::dialogPositiveAction
 
     override fun setBinding(inflater: LayoutInflater, container: ViewGroup?): ViewBinding {
         sampleBinding = FragmentTestBinding.inflate(inflater, container, false)
@@ -33,25 +31,13 @@ class SampleFragment : BaseFragment() {
         actionClicked()
     }
 
-    private fun dialogPositiveAction() {
-        showToast("click")
-    }
-
     private fun actionClicked() {
-        sampleBinding.relAlertDialog.setOnClickListener {
-            showAlertDialog("old Alert")
-        }
-
-        sampleBinding.relCondirmDialog.setOnClickListener {
-            showConfirmationDialog("old Confirmation", actionClicked)
-        }
-
         sampleBinding.relNewAlertDialog.setOnClickListener {
             showDialogAlert(title = null,message = "New Alert")
         }
 
         sampleBinding.relNewImageAlertDialog.setOnClickListener {
-            showDialogAlert(title = null, message ="New Alert Image",drawableImage = R.drawable.ic_logo_suitcore_main)
+            showDialogAlert(title = null, message ="New Alert Image",drawableImage = R.drawable.ic_marker_normal)
         }
 
         sampleBinding.relNewConfirmDialog.setOnClickListener {
@@ -61,13 +47,13 @@ class SampleFragment : BaseFragment() {
         }
 
         sampleBinding.relNewConfirmImageDialog.setOnClickListener {
-            showDialogConfirmation(title = null, message = "New Confirmation With Image", drawableImage = R.drawable.ic_logo_suitcore_main,confirmCallback = {
-                showDialogLoading(true,"Press back to dismiss")
+            showDialogConfirmation(title = null, message = "New Confirmation With Image", drawableImage = R.drawable.ic_marker_normal,confirmCallback = {
+                showDialogLoading(true,getString(R.string.txt_loading_with_info))
             })
         }
 
         sampleBinding.relNewContentDialog.setOnClickListener {
-            showDialogPopImage(R.drawable.ic_logo_suitcore_main)
+            showDialogPopImage(R.drawable.ic_marker_normal)
         }
     }
 

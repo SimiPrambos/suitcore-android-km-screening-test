@@ -1,10 +1,9 @@
-package com.suitcore.helper
+package com.suitcore.base.ui.dialog
 
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -46,7 +45,6 @@ class BaseDialog private constructor(var context: Context,
                 null, null, singleButton = true, basicButton = true,
                 listener = null, imgContent = null, hideAllButton = false, showPanelButton = false)
     }
-
 
     data class BuildAlertDialog(
             var dismiss: Boolean = false,
@@ -115,8 +113,6 @@ class BaseDialog private constructor(var context: Context,
             }
         }
     }
-
-
 
     private var dialogSpass     : Dialog? = null
     private var imgContentDialog: ImageView? = null
@@ -190,7 +186,6 @@ class BaseDialog private constructor(var context: Context,
         confirmDialog()
         initializeView()
     }
-
 
     private fun initializeView() {
         if(title!=null){

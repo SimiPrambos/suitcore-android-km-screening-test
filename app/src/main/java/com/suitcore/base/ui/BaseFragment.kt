@@ -55,42 +55,6 @@ abstract class BaseFragment: Fragment(), MvpView {
         baseActivity?.goToActivity(resultCode, actDestination, data)
     }
 
-    override fun showLoading(isBackPressedCancelable: Boolean, message: String?) {
-        baseActivity?.showLoading(isBackPressedCancelable, message)
-    }
-
-    override fun showLoadingWithText(msg: String) {
-        showLoading(message = msg)
-    }
-
-    override fun showLoadingWithText(msg: Int) {
-        showLoading(message = getString(msg))
-    }
-
-    override fun hideLoading() {
-        baseActivity?.hideLoading()
-    }
-
-    override fun showConfirmationDialog(message: String, confirmCallback: () -> Unit) {
-        baseActivity?.showConfirmationDialog(message, confirmCallback)
-    }
-
-    override fun showConfirmationSingleDialog(message: String, confirmCallback: () -> Unit) {
-        baseActivity?.showConfirmationSingleDialog(message, confirmCallback)
-    }
-
-    override fun showConfirmationDialog(message: Int, confirmCallback: () -> Unit) {
-        baseActivity?.showConfirmationDialog(message, confirmCallback)
-    }
-
-    override fun showAlertDialog(message: String) {
-        baseActivity?.showAlertDialog(message)
-    }
-
-    override fun showAlertDialog(message: Int) {
-        baseActivity?.showAlertDialog(message)
-    }
-
     fun finishLoad(recycler: BaseRecyclerView?) {
         baseActivity?.finishLoad(recycler)
     }
@@ -114,6 +78,10 @@ abstract class BaseFragment: Fragment(), MvpView {
 
     override fun showDialogPopImage(drawableImage: Int?){
         baseActivity?.showDialogPopImage(drawableImage)
+    }
+
+    override fun hideLoading() {
+        baseActivity?.hideLoading()
     }
 
 }

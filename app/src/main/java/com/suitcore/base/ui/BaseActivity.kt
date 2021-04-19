@@ -22,10 +22,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.suitcore.base.presenter.MvpView
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
-import com.suitcore.helper.BaseDialog
-import com.suitcore.helper.BaseDialogInterface
-import com.suitcore.helper.CommonDialogHelper
-import com.suitcore.helper.CommonLoadingDialog
+import com.suitcore.base.ui.dialog.BaseDialog
+import com.suitcore.base.ui.dialog.BaseDialogInterface
 
 
 abstract class BaseActivity: AppCompatActivity(), MvpView {
@@ -33,7 +31,6 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     protected open var binding: ViewBinding? = null
     private var toolBar: Toolbar? = null
     private var mActionBar: ActionBar? = null
-    private var mCommonLoadingDialog: CommonLoadingDialog? = null
     private var activityIntent: Intent? = null
     private var baseDialog: BaseDialog? = null
     private var dismissDialog:Boolean = false
@@ -68,8 +65,8 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
         mActionBar = supportActionBar
         if (mActionBar != null) {
             mActionBar!!.setHomeButtonEnabled(true)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(needHomeButton)
-            supportActionBar!!.setDisplayShowTitleEnabled(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(needHomeButton)
+            supportActionBar?.setDisplayShowTitleEnabled(true)
         }
 
         if (onClickListener != null)
@@ -89,7 +86,7 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     override fun setTitle(title: Int) {
         super.setTitle(title)
         if (mActionBar != null)
-            mActionBar!!.title = getString(title)
+            mActionBar?.title = getString(title)
     }
 
     fun changeProgressBarColor(color: Int, progressBar: ProgressBar) {
@@ -147,50 +144,6 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     }
 
     protected abstract fun onViewReady(savedInstanceState: Bundle?)
-
-    override fun showLoading(isBackPressedCancelable: Boolean, message: String?) {
-        mCommonLoadingDialog?.let {
-            hideLoading()
-        }
-        mCommonLoadingDialog = CommonLoadingDialog.createLoaderDialog(msg = message)
-        mCommonLoadingDialog?.show(supportFragmentManager, CommonLoadingDialog.TAG)
-    }
-
-    override fun showLoadingWithText(msg: String) {
-        showLoading(message = msg)
-    }
-
-    override fun showLoadingWithText(msg: Int) {
-        showLoading(message = getString(msg))
-    }
-
-    override fun hideLoading() {
-        mCommonLoadingDialog?.dismiss()
-    }
-
-    override fun showConfirmationDialog(message: String, confirmCallback: () -> Unit) {
-        CommonDialogHelper.showConfirmationDialog(this, message, confirmCallback)
-    }
-
-    override fun showConfirmationSingleDialog(message: String, confirmCallback: () -> Unit) {
-        CommonDialogHelper.showConfirmationSingleDialog(this, message, confirmCallback)
-    }
-
-    override fun showConfirmationDialog(message: Int, confirmCallback: () -> Unit) {
-        val stringMessage = getString(message)
-        showConfirmationDialog(stringMessage, confirmCallback)
-    }
-
-    override fun showAlertDialog(message: String) {
-        CommonDialogHelper.showAlertDialog(this, message)
-    }
-
-    override fun showAlertDialog(message: Int) {
-        val stringMessage = getString(message)
-        showAlertDialog(stringMessage)
-    }
-
-    //Custom Dialog
 
     override fun showDialogLoading(dismiss: Boolean, message: String?) {
         dismissDialog = dismiss
@@ -268,7 +221,7 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
         }
     }
 
-    fun hideLoadings() {
+    override fun hideLoading() {
         if(baseDialog!=null){
             if(baseDialog?.isShowing()!!){
                 baseDialog?.dismissDialog()

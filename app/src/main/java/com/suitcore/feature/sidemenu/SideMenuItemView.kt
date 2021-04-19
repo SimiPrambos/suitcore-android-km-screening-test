@@ -19,7 +19,7 @@ class SideMenuItemView(var binding: ItemSideMenuBinding) : BaseItemViewHolder<Si
             sideMenu = data
             binding.textViewMenuTitle.text = data.label
 
-            binding.linearLayoutBackground?.setOnClickListener {
+            binding.linearLayoutBackground.setOnClickListener {
                 if (mActionListener != null) {
                     mActionListener?.onClicked(this, adapterPosition - 1)
                 }

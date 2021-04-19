@@ -29,43 +29,6 @@
             android:text="@string/txt_fragment_test"
             android:textSize="@dimen/text_button_uppercase" />
 
-        <RelativeLayout
-            android:id="@+id/relAlertDialog"
-            android:layout_width="@dimen/_130sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:background="@drawable/bg_button_rounded">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:fontFamily="@font/res_roboto_regular"
-                android:text="@string/txt_alert_dialog"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_button_uppercase"
-                android:textStyle="bold" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relCondirmDialog"
-            android:layout_width="@dimen/_130sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:background="@drawable/bg_button_rounded">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/txt_confirm_dialog"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_button_uppercase"
-                android:textStyle="bold" />
-
-        </RelativeLayout>
-
 
         <RelativeLayout
             android:id="@+id/relNewAlertDialog"

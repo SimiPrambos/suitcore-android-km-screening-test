@@ -41,7 +41,7 @@ class SearchPlacePresenter(var context: Context?) : BasePresenter<SearchPlaceVie
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .doOnSubscribe {
-                            mvpView?.showLoading(false)
+                            mvpView?.showDialogLoading(true, context?.getString(R.string.txt_loading))
                         }
                         .doOnComplete {
                             mvpView?.hideLoading()
@@ -72,7 +72,7 @@ class SearchPlacePresenter(var context: Context?) : BasePresenter<SearchPlaceVie
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .doOnSubscribe {
-                            mvpView?.showLoading(true)
+                            mvpView?.showDialogLoading(true, context?.getString(R.string.txt_loading))
                         }
                         .doOnComplete {
                             mvpView?.hideLoading()

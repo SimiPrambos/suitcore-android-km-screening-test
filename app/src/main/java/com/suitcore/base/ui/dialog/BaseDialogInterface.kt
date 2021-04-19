@@ -1,4 +1,4 @@
-package com.suitcore.helper
+package com.suitcore.base.ui.dialog
 
 
 interface BaseDialogInterface {

@@ -22,7 +22,7 @@ class MainPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_
     override fun getCount(): Int = 3
 
     private fun generateMemberFragment(): BaseFragment = if (memberFragment == null) {
-        MemberFragment.newInstance()!!
+        MemberFragment.newInstance()
     }else{
         memberFragment!!
     }
@@ -34,7 +34,7 @@ class MainPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_
     }
 
     private fun generateMapFragment(): BaseFragment = if (mapFragment == null) {
-        EventFragment.newInstance()!!
+        EventFragment.newInstance()
     }else{
         mapFragment!!
     }

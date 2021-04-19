@@ -1,7 +1,6 @@
-package com.suitcore.helper
+package com.suitcore.helper.localization
 
 import android.content.res.Configuration
-import android.content.res.Resources
 
 import java.util.Locale
 import android.os.Build

@@ -1,7 +1,6 @@
 package com.suitcore.helper.inappupdates
 
 import android.content.IntentSender.SendIntentException
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -72,7 +71,7 @@ class InAppUpdateManager : LifecycleObserver {
         setupSnackBar()
         appUpdateManager = AppUpdateManagerFactory.create(activity)
         activity.lifecycle.addObserver(this)
-        if (mode === UpdateMode.FLEXIBLE) appUpdateManager?.registerListener(installStateUpdatedListener!!)
+        if (mode === UpdateMode.FLEXIBLE) appUpdateManager?.registerListener(installStateUpdatedListener)
         checkForUpdate(false)
     }
     //endregion
@@ -271,22 +270,21 @@ class InAppUpdateManager : LifecycleObserver {
     }
 
     private fun setupSnackBar() {
-        val rootView = activity.window.decorView.findViewById<View>(R.id.content)
-        snackbar = Snackbar.make(rootView,
+        snackbar = Snackbar.make(activity.findViewById(R.id.mainContent),
                 snackBarMessage,
                 Snackbar.LENGTH_INDEFINITE)
-        snackbar!!.setAction(snackBarAction) { // Triggers the completion of the update of the app for the flexible flow.
-            appUpdateManager!!.completeUpdate()
+        snackbar?.setAction(snackBarAction) { // Triggers the completion of the update of the app for the flexible flow.
+            appUpdateManager?.completeUpdate()
         }
     }
 
     private fun unregisterListener() {
-        if (appUpdateManager != null && installStateUpdatedListener != null) appUpdateManager?.unregisterListener(installStateUpdatedListener)
+        if (appUpdateManager != null) appUpdateManager?.unregisterListener(installStateUpdatedListener)
     }
 
     private fun reportUpdateError(errorCode: Int, error: Throwable) {
         if (handler != null) {
-            handler!!.onInAppUpdateError(errorCode, error)
+            handler?.onInAppUpdateError(errorCode, error)
         }
     }
 

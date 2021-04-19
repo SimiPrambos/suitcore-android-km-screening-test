@@ -16,7 +16,6 @@ import com.suitcore.helper.CommonConstant
 class SplashScreenActivity : BaseActivity(), SplashScreenView {
 
     private var splashScreenPresenter: SplashScreenPresenter? = null
-    private val actionClicked = ::dialogPositiveAction
     private lateinit var splashScreenBinding: ActivitySplashscreenBinding
 
     override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
@@ -31,27 +30,14 @@ class SplashScreenActivity : BaseActivity(), SplashScreenView {
         setupPresenter()
     }
 
-    private fun handleIntent(){
-        val data: Bundle? = intent.extras
-        if(data?.getString(CommonConstant.APP_CRASH) != null){
-            showConfirmationSingleDialog(getString(R.string.txt_error_crash), actionClicked)
-        }else{
-            splashScreenPresenter?.initialize()
-        }
-    }
-
     private fun setupPresenter() {
         splashScreenPresenter = SplashScreenPresenter()
         splashScreenPresenter?.attachView(this)
-        handleIntent()
+        splashScreenPresenter?.initialize()
     }
 
     override fun navigateToMainView() {
         goToActivity(LoginActivity::class.java,  null, clearIntent = true, isFinish = true)
-    }
-
-    private fun dialogPositiveAction() {
-        splashScreenPresenter?.initialize()
     }
 
 }
