@@ -148,7 +148,7 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     override fun showDialogLoading(dismiss: Boolean, message: String?) {
         dismissDialog = dismiss
         baseDialog = BaseDialog.BuildBaseDialog()
-                .onBackpressedDismiss(dismiss)
+                .onBackPressedDismiss(dismiss)
                 .setContent(message)
                 .build(this)
         hideSoftKeyboard()
@@ -158,7 +158,7 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     override fun showDialogAlert(title: String?, message: String?, confirmCallback: () -> Unit?, drawableImage: Int?){
         dismissDialog = false
         baseDialog = BaseDialog.BuildAlertDialog()
-                .onBackpressedDismiss(false)
+                .onBackPressedDismiss(false)
                 .setTitle(title)
                 .setContent(message)
                 .setSubmitButtonText("OK")
@@ -181,7 +181,7 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     override fun showDialogConfirmation(title: String?, message: String?, confirmCallback: () -> Unit?, cancelCallback: ()-> Unit?, drawableImage: Int?){
         dismissDialog = false
         baseDialog = BaseDialog.BuildConfirmationDialog()
-                .onBackpressedDismiss(dismissDialog)
+                .onBackPressedDismiss(dismissDialog)
                 .setTitle(title)
                 .setContent(message)
                 .setImageContent(drawableImage)
@@ -205,7 +205,7 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
     override fun showDialogPopImage(drawableImage: Int?) {
         dismissDialog = false
         baseDialog = BaseDialog.BuildAlertDialog()
-                .onBackpressedDismiss(dismissDialog)
+                .onBackPressedDismiss(dismissDialog)
                 .hideAllButton(true)
                 .showPanelButton(true)
                 .setImageContent(drawableImage)

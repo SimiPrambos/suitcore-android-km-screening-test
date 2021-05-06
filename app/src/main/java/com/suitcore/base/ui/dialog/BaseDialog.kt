@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -14,6 +15,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.suitcore.R
+import com.suitcore.databinding.BaseDialogBinding
 
 class BaseDialog private constructor(var context: Context,
                                      var type: Type,
@@ -38,7 +40,7 @@ class BaseDialog private constructor(var context: Context,
             var dismiss: Boolean = false,
             var content: String? = "Please Wait"
     ){
-        fun onBackpressedDismiss(dismiss: Boolean = false) = apply { this.dismiss = dismiss  }
+        fun onBackPressedDismiss(dismiss: Boolean = false) = apply { this.dismiss = dismiss  }
         fun setContent(content: String?) = apply { this.content = content }
         fun build(context: Context) = BaseDialog(context, Type.BASE, dismiss, null, content,
                 null, null, singleButton = true, basicButton = true,
@@ -56,7 +58,7 @@ class BaseDialog private constructor(var context: Context,
             var listener: BaseDialogInterface? = null,
             var imgContent: Int? = null
     ){
-        fun onBackpressedDismiss(dismiss: Boolean = false) = apply { this.dismiss = dismiss  }
+        fun onBackPressedDismiss(dismiss: Boolean = false) = apply { this.dismiss = dismiss  }
         fun setTitle(title: String?) = apply { this.title = title }
         fun setContent(content: String?) = apply { this.content = content }
         fun useMaterialButton(basicButton: Boolean) = apply { this.basicButton = basicButton }
@@ -83,7 +85,7 @@ class BaseDialog private constructor(var context: Context,
             var hideButton: Boolean = false,
             var imgContent: Int? = null
     ){
-        fun onBackpressedDismiss(dismiss: Boolean = false) = apply { this.dismiss = dismiss  }
+        fun onBackPressedDismiss(dismiss: Boolean = false) = apply { this.dismiss = dismiss  }
         fun setTitle(title: String?) = apply { this.title = title }
         fun setContent(content: String?) = apply { this.content = content }
         fun setListener(listener: BaseDialogInterface?) = apply{ this.listener = listener  }
@@ -113,54 +115,19 @@ class BaseDialog private constructor(var context: Context,
         }
     }
 
-    private var dialogSpass     : Dialog? = null
-    private var imgContentDialog: ImageView? = null
-    private var tvProgressDialog: TextView? = null
-    private var tvTitleDialog   : TextView? = null
-    private var tvContentDialog : TextView? = null
-    private var tvBtnSubmit   : TextView? = null
-    private var tvBtnCancel : TextView? = null
-    private var dialogInterface : ConstraintLayout? = null
-    private var relSubmitDialog : RelativeLayout? = null
-    private var relCancelDialog : RelativeLayout? = null
-    private var loadingInterface: LinearLayout? = null
-    private var customLayout    : LinearLayout? = null
-    private var layButton       : LinearLayout? = null
-    private var parentLayout       : LinearLayout? = null
-    private var imgCloseDialog  : ImageView? = null
+    private lateinit var binding: BaseDialogBinding
 
-
-    private fun initViews() {
-        parentLayout = dialogSpass?.findViewById<View>(R.id.parentLayout) as LinearLayout
-
-        //progress dialog
-        loadingInterface = dialogSpass?.findViewById<View>(R.id.loadingInterface) as LinearLayout
-        tvProgressDialog = dialogSpass?.findViewById<View>(R.id.tvProgressBar) as TextView
-
-        //confirmation dialog
-        dialogInterface = dialogSpass?.findViewById<View>(R.id.dialogInterface) as ConstraintLayout
-        imgContentDialog = dialogSpass?.findViewById<View>(R.id.imgContentDialog) as ImageView
-        tvTitleDialog = dialogSpass?.findViewById<View>(R.id.tvTitleDialog) as TextView
-        tvContentDialog = dialogSpass?.findViewById<View>(R.id.tvContentDialog) as TextView
-
-        //Button layout
-        layButton = dialogSpass?.findViewById<View>(R.id.layButton) as LinearLayout
-        tvBtnSubmit = dialogSpass?.findViewById<View>(R.id.tvBtnSubmit) as TextView
-        tvBtnCancel = dialogSpass?.findViewById<View>(R.id.tvBtnCancel) as TextView
-        relSubmitDialog = dialogSpass?.findViewById<View>(R.id.relSubmitDialog) as RelativeLayout
-        relCancelDialog = dialogSpass?.findViewById<View>(R.id.relCancelDialog) as RelativeLayout
-        imgCloseDialog = dialogSpass?.findViewById<View>(R.id.imgCloseDialog) as ImageView
-    }
+    private var dialogSpass : Dialog? = null
 
     private fun initDialog(){
         dialogSpass = Dialog(context)
         dialogSpass?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialogSpass?.setCanceledOnTouchOutside(false)
         dialogSpass?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialogSpass?.setContentView(R.layout.base_dialog)
+        binding = BaseDialogBinding.inflate(LayoutInflater.from(context))
+        dialogSpass?.setContentView(binding.root)
         dialogSpass?.setOnCancelListener {if (dismiss) { dismissDialog()}}
 
-        initViews()
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialogSpass?.window?.attributes)
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
@@ -187,110 +154,101 @@ class BaseDialog private constructor(var context: Context,
     }
 
     private fun initializeView() {
-        if(title!=null){
-            tvTitleDialog?.visibility = View.VISIBLE
-            tvTitleDialog?.text = title
+        binding.tvTitleDialog.visibility = if(title!=null){
+            binding.tvTitleDialog.text = title
+            View.VISIBLE
         }else{
-            tvTitleDialog?.visibility = View.GONE
+            View.GONE
         }
 
-        if(imgContent!=null){
-            imgContentDialog?.visibility = View.VISIBLE
-            imgContentDialog?.setBackgroundResource(imgContent!!)
-        }else{
-            imgContentDialog?.visibility = View.GONE
-            imgContentDialog?.setBackgroundResource(0)
+        binding.imgContentDialog.visibility = if(imgContent!=null) {
+            binding.imgContentDialog.setBackgroundResource(imgContent!!)
+            View.VISIBLE
+        }else {
+            binding.imgContentDialog.setBackgroundResource(0)
+            View.GONE
         }
+
         if(Type.BASE == type){
-            if(content!=null){
-                tvProgressDialog?.visibility = View.VISIBLE
-                tvProgressDialog?.text = content
+            binding.tvProgressBar.visibility = if(content!=null){
+                binding.tvProgressBar.text = content
+                View.VISIBLE
             }else{
-                tvProgressDialog?.visibility = View.GONE
+                View.GONE
             }
         }else{
-            if(content!=null){
-                tvContentDialog?.visibility = View.VISIBLE
-                tvContentDialog?.text = content
+            binding.tvContentDialog.visibility = if(content!=null){
+                binding.tvContentDialog.text = content
+                View.VISIBLE
             }else{
-                tvContentDialog?.visibility = View.GONE
+                View.GONE
             }
         }
 
-        if(submitBtnText!=null){
-            tvBtnSubmit?.text = submitBtnText
-        }else{
-            tvBtnSubmit?.text = context.getString(R.string.txt_yes)
-        }
+        binding.tvBtnSubmit.text = if(submitBtnText!=null) submitBtnText else context.getString(R.string.txt_yes)
 
-        if(cancelBtnText!=null){
-            tvBtnCancel?.text = cancelBtnText
-        }else{
-            tvBtnCancel?.text = context.getString(R.string.txt_no)
-        }
+        binding.tvBtnCancel.text = if(cancelBtnText!=null) cancelBtnText else context.getString(R.string.txt_no)
+
 
         //Listener
-        relSubmitDialog?.setOnClickListener {
+        binding.relSubmitDialog.setOnClickListener {
             listener?.onSubmitClick()
             dismissDialog()
         }
-        relCancelDialog?.setOnClickListener {
+        binding.relCancelDialog.setOnClickListener {
             listener?.onDismissClick()
             dismissDialog()
         }
 
         //using basic button
-        if(basicButton){
-            relSubmitDialog?.setBackgroundResource(0)
-            tvBtnSubmit?.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
-            tvBtnCancel?.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
-            relCancelDialog?.setBackgroundResource(0)
-        }
+        if(basicButton)
+            binding.relSubmitDialog.setBackgroundResource(0)
+        binding.tvBtnSubmit.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+        binding.tvBtnCancel.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+        binding.relCancelDialog.setBackgroundResource(0)
+
 
         //hide all layout button
-        if(hideAllButton){
-            layButton?.visibility = View.GONE
-        }
+        if(hideAllButton)
+            binding.layButton.visibility = View.GONE
+
 
         //panel close
-        if(showPanelButton){
-            imgCloseDialog?.visibility = View.VISIBLE
-            imgCloseDialog?.setOnClickListener {
+        binding.imgCloseDialog.visibility = if(showPanelButton){
+            binding.imgCloseDialog.setOnClickListener {
                 dismissDialog()
             }
+            View.VISIBLE
         }else {
-            imgCloseDialog?.visibility = View.GONE
+            View.GONE
         }
     }
 
     private fun basicDialog(){
-        loadingInterface?.visibility = View.VISIBLE
-        customLayout?.visibility= View.GONE
-        dialogInterface?.visibility = View.GONE
-        layButton?.visibility = View.GONE
-        parentLayout?.setBackgroundResource(0)
+        binding.loadingInterface.visibility = View.VISIBLE
+        binding.dialogInterface.visibility = View.GONE
+        binding.layButton.visibility = View.GONE
+        binding.parentLayout.setBackgroundResource(0)
     }
 
     private fun alertDialog(){
-        dialogInterface?.visibility = View.VISIBLE
-        relSubmitDialog?.visibility = View.VISIBLE
-        relCancelDialog?.visibility= View.GONE
-        customLayout?.visibility= View.GONE
-        loadingInterface?.visibility = View.GONE
+        binding.dialogInterface.visibility = View.VISIBLE
+        binding.relSubmitDialog.visibility = View.VISIBLE
+        binding.relCancelDialog.visibility= View.GONE
+        binding.loadingInterface.visibility = View.GONE
     }
 
     private fun confirmDialog(){
-        dialogInterface?.visibility = View.VISIBLE
-        layButton?.visibility = View.VISIBLE
-        relSubmitDialog?.visibility = View.VISIBLE
-        if(!singleButton){
-            relCancelDialog?.visibility = View.VISIBLE
+        binding.dialogInterface.visibility = View.VISIBLE
+        binding.layButton.visibility = View.VISIBLE
+        binding.relSubmitDialog.visibility = View.VISIBLE
+        binding.relCancelDialog.visibility = if(!singleButton){
+            View.VISIBLE
         }else{
-            relCancelDialog?.visibility = View.GONE
+            View.GONE
         }
-        relSubmitDialog?.visibility = View.VISIBLE
-        customLayout?.visibility= View.GONE
-        loadingInterface?.visibility = View.GONE
+        binding.relSubmitDialog.visibility = View.VISIBLE
+        binding.loadingInterface.visibility = View.GONE
     }
 
     fun show() {
