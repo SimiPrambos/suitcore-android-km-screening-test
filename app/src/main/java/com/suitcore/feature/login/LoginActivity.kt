@@ -1,19 +1,20 @@
 package com.suitcore.feature.login
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.Window
-import androidx.appcompat.app.AlertDialog
+import android.view.View
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.install.model.ActivityResult
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
-import com.suitcore.data.local.prefs.DataConstant
-import com.suitcore.data.local.prefs.SuitPreferences
+import com.suitcore.data.model.UpdateType
 import com.suitcore.databinding.ActivityLoginBinding
 import com.suitcore.feature.sidemenu.SideMenuActivity
 import com.suitcore.feature.tabmenu.TabMenuActivity
@@ -24,6 +25,8 @@ import com.suitcore.firebase.remoteconfig.RemoteConfigPresenter
 import com.suitcore.firebase.remoteconfig.RemoteConfigView
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
+import com.suitcore.helper.inappupdates.InAppUpdateManager
+import com.suitcore.helper.inappupdates.InAppUpdateStatus
 import com.suitcore.helper.permission.SuitPermissions
 import com.suitcore.helper.socialauth.facebook.FacebookHelper
 import com.suitcore.helper.socialauth.facebook.FacebookListener
@@ -31,15 +34,18 @@ import com.suitcore.helper.socialauth.google.GoogleListener
 import com.suitcore.helper.socialauth.google.GoogleSignInHelper
 import com.suitcore.helper.socialauth.twitter.TwitterHelper
 import com.suitcore.helper.socialauth.twitter.TwitterListener
+import timber.log.Timber
 
 /**
  * Created by dodydmw19 on 7/18/18.
  */
 
-class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListener, FacebookListener, TwitterListener {
+class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
+        GoogleListener, FacebookListener, TwitterListener, InAppUpdateManager.InAppUpdateHandler {
 
     private var loginPresenter: LoginPresenter? = null
     private var remoteConfigPresenter: RemoteConfigPresenter? = null
+    private var inAppUpdateManager: InAppUpdateManager? = null
 
     private var mGoogleHelper: GoogleSignInHelper? = null
     private var mTwitterHelper: TwitterHelper? = null
@@ -63,9 +69,8 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
     override fun onResume() {
         super.onResume()
         sendAnalytics()
-        remoteConfigPresenter?.checkUpdate(CommonConstant.CHECK_APP_VERSION) // check app version and notify update from remote config
-        remoteConfigPresenter?.checkUpdate(CommonConstant.CHECK_BASE_URL) // check base url from remote config if any changes
-
+        //remoteConfigPresenter?.checkBaseUrl()
+        remoteConfigPresenter?.getUpdateType(this)
     }
 
     private fun sendAnalytics() {
@@ -83,12 +88,13 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
         remoteConfigPresenter?.attachView(this)
     }
 
+    @SuppressLint("TimberArgCount")
     private fun needPermissions() {
         SuitPermissions.with(this)
                 .permissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE)
                 .onAccepted {
                     for (s in it) {
-                        Log.d("granted_permission", s)
+                        Timber.d("granted_permission", s)
                     }
                     showToast("Granted")
                 }
@@ -99,6 +105,17 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
                     showToast("Forever denied")
                 }
                 .ask()
+    }
+
+    private fun setupInAppUpdate(mode: CommonConstant.UpdateMode) {
+        inAppUpdateManager = InAppUpdateManager.builder(this, 100)
+                ?.resumeUpdates(true) // Resume the update, if the update was stalled. Default is true
+                ?.mode(mode)
+                ?.snackBarMessage(getString(R.string.txt_update_completed))
+                ?.snackBarAction(getString(R.string.txt_button_restart))
+                ?.handler(this)
+
+        inAppUpdateManager?.checkForAppUpdate()
     }
 
     private fun setupSocialLogin() {
@@ -161,53 +178,52 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
         loginPresenter?.login()
     }
 
-    override fun onUpdateAppNeeded(forceUpdate: Boolean, message: String?) {
-        when (forceUpdate) {
-            true -> {
-                val confirmDialog = AlertDialog.Builder(this)
-                        .setCancelable(false)
-                        .setMessage(message)
-                        .setPositiveButton("OK") { d, _ ->
-                            d.dismiss()
-                            CommonUtils.openAppInStore(this)
-                        }
-                        .create()
-
-                confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                confirmDialog.show()
-            }
-            false -> {
-                val confirmDialog = AlertDialog.Builder(this)
-                        .setCancelable(false)
-                        .setMessage(message)
-                        .setPositiveButton("OK") { d, _ ->
-                            d.dismiss()
-                            CommonUtils.openAppInStore(this)
-                        }
-                        .setNegativeButton("CANCEL") { d, _ ->
-                            d.dismiss()
-                            if (SuitPreferences.instance()?.getString(DataConstant.IS_LOGIN) != null
-                                    && SuitPreferences.instance()?.getString(DataConstant.IS_LOGIN) == "true") {
-                                //goToActivity(MainActivity::class.java, null, clearIntent = true, isFinish = true)
-                            }
-                        }
-                        .create()
-
-                confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                confirmDialog.show()
-            }
-        }
-    }
-
-    override fun onNoUpdateAppNeeded(message: String?) {
-        if (SuitPreferences.instance()?.getString(DataConstant.IS_LOGIN) != null
-                && SuitPreferences.instance()?.getString(DataConstant.IS_LOGIN) == "true") {
-            //goToActivity(MainActivity::class.java, null, clearIntent = true, isFinish = true)
-        }
-    }
-
     override fun onUpdateBaseUrlNeeded(type: String?, url: String?) {
         RemoteConfigHelper.changeBaseUrl(this, type.toString(), url.toString())
+    }
+
+    @SuppressLint("TimberArgCount")
+    override fun onUpdateTypeReceive(update: UpdateType?) {
+        update?.let {
+            when (it.updateType) {
+                CommonConstant.INAPPUPDATE -> {
+                    setupInAppUpdate(CommonUtils.convertData(update.category))
+                }
+                CommonConstant.REMOTECONFIG -> {
+                    if (CommonUtils.isUpdateAvailable(update.latestVersionCode)) {
+                        val message: String = update.messages ?: "Update Available"
+                        if (update.category == CommonConstant.IMMEDIATE) {
+                            showDialogAlert(title = null, message = message, confirmCallback = {
+                                CommonUtils.openAppInStore(this)
+                            })
+                        } else {
+                            showDialogConfirmation(title = null, message, confirmCallback = {
+                                CommonUtils.openAppInStore(this)
+                            })
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onInAppUpdateError(code: Int, error: Throwable?) {
+        Timber.d(error, error?.message.toString())
+    }
+
+    override fun onInAppUpdateStatus(status: InAppUpdateStatus?) {
+        if (status?.isDownloaded == true) {
+            val rootView: View = window.decorView.findViewById(R.id.content)
+            val snackBar = Snackbar.make(rootView,
+                    "An update has just been downloaded.",
+                    Snackbar.LENGTH_INDEFINITE)
+            snackBar.setAction("RESTART") {
+
+                // Triggers the completion of the update of the app for the flexible flow.
+                inAppUpdateManager?.completeUpdate()
+            }
+            snackBar.show()
+        }
     }
 
     private fun actionClicked() {
@@ -236,12 +252,28 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView, GoogleListene
         }
     }
 
+    @SuppressLint("TimberArgCount")
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null) {
-            mGoogleHelper?.onActivityResult(requestCode, resultCode, data)
-            mTwitterHelper?.onActivityResult(requestCode, resultCode, data)
-            mFbHelper?.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 100) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    Timber.d("appupdates",  "Result Ok")
+                }
+                Activity.RESULT_CANCELED -> {
+                    Timber.d("appupdates", "Result Cancelled")
+                    inAppUpdateManager?.checkForAppUpdate()
+                }
+                ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {
+                    Timber.d("Update Failure")
+                }
+            }
+        }else {
+            if (data != null) {
+                mGoogleHelper?.onActivityResult(requestCode, resultCode, data)
+                mTwitterHelper?.onActivityResult(requestCode, resultCode, data)
+                mFbHelper?.onActivityResult(requestCode, resultCode, data)
+            }
         }
     }
 

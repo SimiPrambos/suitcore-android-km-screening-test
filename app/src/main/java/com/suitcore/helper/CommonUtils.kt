@@ -165,6 +165,23 @@ class CommonUtils {
             return json
         }
 
+         fun convertData(type: String?): CommonConstant.UpdateMode{
+            return when(type){
+                "flexible" -> CommonConstant.UpdateMode.FLEXIBLE
+                "immediate" -> CommonConstant.UpdateMode.IMMEDIATE
+                else -> CommonConstant.UpdateMode.FLEXIBLE
+            }
+        }
+
+        fun isUpdateAvailable(version: Int?): Boolean{
+            version?.let{
+                val currentVersion = BuildConfig.VERSION_CODE
+                return version != 0 && currentVersion < it
+            }?:run{
+                return false
+            }
+        }
+
     }
 
 }

@@ -23,9 +23,7 @@ import timber.log.Timber
  */
 
 class InAppUpdateManager : LifecycleObserver {
-    /**
-     * Callback methods where update events are reported.
-     */
+
     interface InAppUpdateHandler {
         fun onInAppUpdateError(code: Int, error: Throwable?)
         fun onInAppUpdateStatus(status: InAppUpdateStatus?)
@@ -33,7 +31,7 @@ class InAppUpdateManager : LifecycleObserver {
 
     private var activity: AppCompatActivity
     private var appUpdateManager: AppUpdateManager? = null
-    private var requestCode = 64534
+    private var requestCode = 101
     private var snackBarMessage = "An update has just been downloaded."
     private var snackBarAction = "RESTART"
     private var mode = UpdateMode.FLEXIBLE
@@ -74,6 +72,7 @@ class InAppUpdateManager : LifecycleObserver {
         if (mode === UpdateMode.FLEXIBLE) appUpdateManager?.registerListener(installStateUpdatedListener)
         checkForUpdate(false)
     }
+
     //endregion
     // region Setters
     /**
@@ -179,11 +178,11 @@ class InAppUpdateManager : LifecycleObserver {
     private fun checkForUpdate(startUpdate: Boolean) {
 
         // Returns an intent object that you use to check for an update.
-        val appUpdateInfoTask = appUpdateManager!!.appUpdateInfo
+        val appUpdateInfoTask = appUpdateManager?.appUpdateInfo
 
 
         // Checks that the platform will allow the specified type of update.
-        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+        appUpdateInfoTask?.addOnSuccessListener { appUpdateInfo ->
             inAppUpdateStatus.setAppUpdateInfo(appUpdateInfo)
             if (startUpdate) {
                 if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
@@ -270,7 +269,7 @@ class InAppUpdateManager : LifecycleObserver {
     }
 
     private fun setupSnackBar() {
-        snackbar = Snackbar.make(activity.findViewById(R.id.mainContent),
+        snackbar = Snackbar.make(activity.findViewById(R.id.content),
                 snackBarMessage,
                 Snackbar.LENGTH_INDEFINITE)
         snackbar?.setAction(snackBarAction) { // Triggers the completion of the update of the app for the flexible flow.

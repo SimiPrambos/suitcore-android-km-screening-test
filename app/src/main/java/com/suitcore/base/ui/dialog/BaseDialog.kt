@@ -15,7 +15,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.suitcore.R
 
-
 class BaseDialog private constructor(var context: Context,
                                      var type: Type,
                                      var dismiss: Boolean = false,
@@ -262,7 +261,6 @@ class BaseDialog private constructor(var context: Context,
         }else {
             imgCloseDialog?.visibility = View.GONE
         }
-
     }
 
     private fun basicDialog(){

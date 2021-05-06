@@ -1,33 +1,25 @@
 package com.suitcore.firebase.remoteconfig
 
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.google.gson.Gson
 import com.suitcore.BaseApplication
 import com.suitcore.BuildConfig
 import com.suitcore.R
 import com.suitcore.base.presenter.BasePresenter
 import com.suitcore.data.local.prefs.DataConstant
 import com.suitcore.data.local.prefs.SuitPreferences
+import com.suitcore.data.model.UpdateType
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
-
-/**
- *
- *  Field Params :
- *  force_message -> for message content force update
- *  info_message -> for message content info update (can deny)
- *  minumum_force_android -> latest versionCode for force update
- *  minimum_info_android -> latest versionCode for info update
- *
- */
-
 
 class RemoteConfigPresenter : BasePresenter<RemoteConfigView> {
 
     private var mFireBaseRemoteConfig: FirebaseRemoteConfig? = null
     private var mvpView: RemoteConfigView? = null
-    private val cacheExpiration: Long = 0 // 1 hour in seconds.
 
     init {
         BaseApplication.applicationComponent.inject(this)
@@ -37,93 +29,66 @@ class RemoteConfigPresenter : BasePresenter<RemoteConfigView> {
     private fun setupFireBaseRemoteConfig() {
         mFireBaseRemoteConfig = FirebaseRemoteConfig.getInstance()
         mFireBaseRemoteConfig?.setConfigSettingsAsync(
-                FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(3600L)
+                FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(0)
                         .build())
 
         mFireBaseRemoteConfig?.setDefaultsAsync(R.xml.remote_config_defaults)
     }
 
-    fun checkUpdate(type: String) {
+    fun checkBaseUrl() {
         if (mFireBaseRemoteConfig == null) {
             setupFireBaseRemoteConfig()
         }
 
-        mFireBaseRemoteConfig?.fetch(cacheExpiration)
+        mFireBaseRemoteConfig?.fetchAndActivate()
                 ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // After config data is successfully fetched, it must be activated before newly fetched
-                        // values are returned.
-                        mFireBaseRemoteConfig?.activate()
+                        val updated = task.result
+                        Log.d("***", "Config params updated: $updated")
                     }
-                    when (type) {
-                        CommonConstant.CHECK_APP_VERSION -> checkVersion()
-                        CommonConstant.CHECK_BASE_URL -> {
-                            val newBaseUrl: String? = mFireBaseRemoteConfig?.getString(CommonConstant.NEW_BASE_URL)
-                            val currentUrl: String? = SuitPreferences.instance()?.getString(DataConstant.BASE_URL)
-                            if (newBaseUrl != null) {
-                                if (newBaseUrl.toString().isNotEmpty()) {
-                                    if (currentUrl != newBaseUrl) mvpView?.onUpdateBaseUrlNeeded("new", newBaseUrl.toString())
-                                } else {
-                                    if (currentUrl != null && currentUrl.isNotEmpty() && currentUrl != BuildConfig.BASE_URL) {
-                                        mvpView?.onUpdateBaseUrlNeeded("default", BuildConfig.BASE_URL)
-                                    } else {
-                                        CommonUtils.setDefaultBaseUrlIfNeeded()
-                                    }
-                                }
+
+                    val newBaseUrl: String? = mFireBaseRemoteConfig?.getString(CommonConstant.NEW_BASE_URL)
+                    val currentUrl: String? = SuitPreferences.instance()?.getString(DataConstant.BASE_URL)
+                    if (newBaseUrl != null) {
+                        if (newBaseUrl.toString().isNotEmpty()) {
+                            if (currentUrl != newBaseUrl) mvpView?.onUpdateBaseUrlNeeded("new", newBaseUrl.toString())
+                        } else {
+                            if (currentUrl != null && currentUrl.isNotEmpty() && currentUrl != BuildConfig.BASE_URL) {
+                                mvpView?.onUpdateBaseUrlNeeded("default", BuildConfig.BASE_URL)
+                            } else {
+                                CommonUtils.setDefaultBaseUrlIfNeeded()
                             }
                         }
                     }
                 }
     }
 
+    fun getUpdateType(context: Context) {
+        var updateFromConsole: String? = ""
+        val updateDefaultJSON = CommonUtils.loadJSONFromAsset("update.json", context)
+        val gSon = Gson()
+        var updateType: UpdateType? = gSon.fromJson(updateDefaultJSON, UpdateType::class.java)
 
-    private fun checkVersion() {
-        val currentVersion = java.lang.Double.valueOf(BuildConfig.VERSION_CODE.toDouble())
-        var normalUpdateVersion: Double? = 0.0
-        var forceUpdateVersion: Double? = 0.0
-
-        if (mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_FORCE_UPDATE) != null && mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_FORCE_UPDATE)!!.isNotEmpty()) {
-            val info = mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_FORCE_UPDATE)
-            forceUpdateVersion = if (info != null) {
-                java.lang.Double.parseDouble(info)
-            } else {
-                0.0
-            }
+        if (mFireBaseRemoteConfig == null) {
+            setupFireBaseRemoteConfig()
         }
 
-        if (mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_NORMAL_UPDATE) != null && mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_NORMAL_UPDATE)!!.isNotEmpty()) {
-            normalUpdateVersion = try {
-                val info = mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_NORMAL_UPDATE)
-                if (info != null) {
-                    java.lang.Double.parseDouble(info)
-                } else {
-                    0.0
+        mFireBaseRemoteConfig?.fetchAndActivate()
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val updated = task.result
+                        Log.d("***", "Config params updated: $updated")
+                    }
+
+                    if (mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_UPDATE_TYPE) != null && mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_UPDATE_TYPE)!!.isNotEmpty()) {
+                        updateFromConsole = mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_UPDATE_TYPE)
+                        updateType = UpdateType()
+                        updateType = gSon.fromJson(updateFromConsole.toString(), UpdateType::class.java)
+                        mvpView?.onUpdateTypeReceive(updateType)
+                    }else{
+                        mvpView?.onUpdateTypeReceive(updateType)
+                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                0.0
-            }
-        }
-
-        val messages: String
-
-        if (forceUpdateVersion != 0.0 && currentVersion < forceUpdateVersion!!) {
-            try {
-                messages = mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_FORCE_MESSAGE).toString()
-                mvpView?.onUpdateAppNeeded(true, messages)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        } else if (normalUpdateVersion != 0.0 && currentVersion < normalUpdateVersion!!) {
-            try {
-                messages = mFireBaseRemoteConfig?.getString(CommonConstant.NOTIFY_NORMAL_MESSAGE).toString()
-                mvpView?.onUpdateAppNeeded(false, messages)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        } else {
-            mvpView?.onNoUpdateAppNeeded("")
-        }
     }
 
     override fun onDestroy() {

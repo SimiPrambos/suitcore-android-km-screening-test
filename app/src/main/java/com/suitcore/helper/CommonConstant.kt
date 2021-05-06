@@ -12,6 +12,7 @@ object CommonConstant {
     const val NOTIFY_FORCE_UPDATE = "minumum_force_android"
     const val NOTIFY_NORMAL_MESSAGE = "info_message"
     const val NOTIFY_FORCE_MESSAGE = "force_message"
+    const val NOTIFY_UPDATE_TYPE= "update_type"
     const val NEW_BASE_URL = "endpoint_url"
     const val CHECK_APP_VERSION = "app_version"
     const val CHECK_BASE_URL = "base_url"
@@ -29,5 +30,11 @@ object CommonConstant {
 
     const val UPDATE_ERROR_START_APP_UPDATE_FLEXIBLE = 100
     const val UPDATE_ERROR_START_APP_UPDATE_IMMEDIATE = 101
+
+    const val INAPPUPDATE = "InAppUpdate"
+    const val REMOTECONFIG = "RemoteConfig"
+    const val FLEXIBLE = "flexible"
+    const val IMMEDIATE = "immedieate"
+
 
 }
