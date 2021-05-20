@@ -172,7 +172,7 @@ dependencies {
     implementation 'com.jakewharton:process-phoenix:2.0.0'
 
     //----- One Signal
-    implementation 'com.onesignal:OneSignal:3.15.6'
+    implementation 'com.onesignal:OneSignal:3.15.7'
 
     //----- Mapbox
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.2.0'

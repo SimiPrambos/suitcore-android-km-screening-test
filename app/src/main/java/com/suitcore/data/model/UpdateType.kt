@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName
     RemoteConfig - (flexible/immediate)
  */
 
-
 open class UpdateType {
 
     @SerializedName("update_type")

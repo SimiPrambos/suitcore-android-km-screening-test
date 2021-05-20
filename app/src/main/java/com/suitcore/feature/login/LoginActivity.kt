@@ -258,7 +258,7 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
         if (requestCode == 100) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    Timber.d("appupdates",  "Result Ok")
+                    Timber.d("appupdates", "Result Ok")
                 }
                 Activity.RESULT_CANCELED -> {
                     Timber.d("appupdates", "Result Cancelled")
@@ -268,7 +268,7 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
                     Timber.d("Update Failure")
                 }
             }
-        }else {
+        } else {
             if (data != null) {
                 mGoogleHelper?.onActivityResult(requestCode, resultCode, data)
                 mTwitterHelper?.onActivityResult(requestCode, resultCode, data)
