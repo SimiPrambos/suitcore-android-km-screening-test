@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.jcodecraeer.xrecyclerview.XRecyclerView
 import com.suitcore.R
 import com.suitcore.databinding.LayoutBaseEmptyBinding
 import com.suitcore.databinding.LayoutBaseErrorBinding
@@ -191,33 +190,33 @@ class BaseRecyclerView : FrameLayout {
      * Below are some methods from XRecyclerView
      */
 
-    fun destroy() {
-        baseRecyclerBinding.recyclerView.destroy()
-    }
+//    fun destroy() {
+//        baseRecyclerBinding.recyclerView.destroy()
+//    }
 
-    fun addHeaderView(view: View) {
-        baseRecyclerBinding.recyclerView.addHeaderView(view)
-    }
+//    fun addHeaderView(view: View) {
+//        baseRecyclerBinding.recyclerView.addHeaderView(view)
+//    }
 
-    fun loadMoreComplete() {
-        baseRecyclerBinding.recyclerView.loadMoreComplete()
-    }
+//    fun loadMoreComplete() {
+//        baseRecyclerBinding.recyclerView.loadMoreComplete()
+//    }
 
-    fun setNoMore(isNoMore: Boolean) {
-        baseRecyclerBinding.recyclerView.setNoMore(isNoMore)
-    }
+//    fun setNoMore(isNoMore: Boolean) {
+//        baseRecyclerBinding.recyclerView.setNoMore(isNoMore)
+//    }
 
-    fun setPullToRefreshEnable(isPullToRefresh: Boolean) {
-        baseRecyclerBinding.recyclerView.setPullRefreshEnabled(isPullToRefresh)
-    }
+//    fun setPullToRefreshEnable(isPullToRefresh: Boolean) {
+//        baseRecyclerBinding.recyclerView.setPullRefreshEnabled(isPullToRefresh)
+//    }
 
-    fun completeRefresh() {
-        baseRecyclerBinding.recyclerView.refreshComplete()
-    }
+//    fun completeRefresh() {
+//        baseRecyclerBinding.recyclerView.refreshComplete()
+//    }
 
-    fun setLoadingMoreEnabled(isLoadMore: Boolean) {
-        baseRecyclerBinding.recyclerView.setLoadingMoreEnabled(isLoadMore)
-    }
+//    fun setLoadingMoreEnabled(isLoadMore: Boolean) {
+//        baseRecyclerBinding.recyclerView.setLoadingMoreEnabled(isLoadMore)
+//    }
 
     fun setAdapter(adapter: RecyclerView.Adapter<*>?) {
         baseRecyclerBinding.recyclerView.adapter = adapter
@@ -227,9 +226,9 @@ class BaseRecyclerView : FrameLayout {
         baseRecyclerBinding.recyclerView.layoutManager = layout
     }
 
-    fun setLoadingListener(listener: XRecyclerView.LoadingListener) {
-        baseRecyclerBinding.recyclerView.setLoadingListener(listener)
-    }
+//    fun setLoadingListener(listener: XRecyclerView.LoadingListener) {
+//        baseRecyclerBinding.recyclerView.setLoadingListener(listener)
+//    }
 
     fun scrollToPosition(position: Int) {
         baseRecyclerBinding.recyclerView.scrollToPosition(position)

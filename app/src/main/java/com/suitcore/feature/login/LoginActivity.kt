@@ -32,8 +32,6 @@ import com.suitcore.helper.socialauth.facebook.FacebookHelper
 import com.suitcore.helper.socialauth.facebook.FacebookListener
 import com.suitcore.helper.socialauth.google.GoogleListener
 import com.suitcore.helper.socialauth.google.GoogleSignInHelper
-import com.suitcore.helper.socialauth.twitter.TwitterHelper
-import com.suitcore.helper.socialauth.twitter.TwitterListener
 import timber.log.Timber
 
 /**
@@ -41,14 +39,13 @@ import timber.log.Timber
  */
 
 class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
-        GoogleListener, FacebookListener, TwitterListener, InAppUpdateManager.InAppUpdateHandler {
+        GoogleListener, FacebookListener, InAppUpdateManager.InAppUpdateHandler {
 
     private var loginPresenter: LoginPresenter? = null
     private var remoteConfigPresenter: RemoteConfigPresenter? = null
     private var inAppUpdateManager: InAppUpdateManager? = null
 
     private var mGoogleHelper: GoogleSignInHelper? = null
-    private var mTwitterHelper: TwitterHelper? = null
     private var mFbHelper: FacebookHelper? = null
     private lateinit var loginBinding: ActivityLoginBinding
 
@@ -122,13 +119,6 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
         // Google  initialization
         mGoogleHelper = GoogleSignInHelper(this, R.string.google_default_web_client_id, this)
 
-        // twitter initialization
-        mTwitterHelper = TwitterHelper(
-                R.string.twitter_api_key,
-                R.string.twitter_secret_key,
-                this,
-                this)
-
         // fb initialization
         mFbHelper = FacebookHelper(this, getString(R.string.facebook_request_field))
 
@@ -165,15 +155,6 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
     }
 
     override fun onFbSignInSuccess(authToken: String?, userId: String?) {
-        // send token & user_id to server
-        loginPresenter?.login()
-    }
-
-    override fun onTwitterError(errorMessage: String?) {
-        showToast(errorMessage.toString())
-    }
-
-    override fun onTwitterSignIn(authToken: String?, secret: String?, userId: String?) {
         // send token & user_id to server
         loginPresenter?.login()
     }
@@ -235,13 +216,13 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
             mFbHelper?.performSignIn(this)
         }
 
-        loginBinding.relTwitter.setOnClickListener {
-            if (CommonUtils.checkTwitterApp(this)) {
-                mTwitterHelper?.performSignIn()
-            } else {
-                showToast(getString(R.string.txt_twitter_not_installed))
-            }
-        }
+//        loginBinding.relTwitter.setOnClickListener {
+//            if (CommonUtils.checkTwitterApp(this)) {
+//                mTwitterHelper?.performSignIn()
+//            } else {
+//                showToast(getString(R.string.txt_twitter_not_installed))
+//            }
+//        }
 
         loginBinding.tvSkipToTabMenu.setOnClickListener {
             goToActivity(TabMenuActivity::class.java, null, clearIntent = true, isFinish = true)
@@ -271,7 +252,7 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
         } else {
             if (data != null) {
                 mGoogleHelper?.onActivityResult(requestCode, resultCode, data)
-                mTwitterHelper?.onActivityResult(requestCode, resultCode, data)
+               // mTwitterHelper?.onActivityResult(requestCode, resultCode, data)
                 mFbHelper?.onActivityResult(requestCode, resultCode, data)
             }
         }

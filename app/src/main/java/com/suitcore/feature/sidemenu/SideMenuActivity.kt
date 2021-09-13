@@ -1,5 +1,6 @@
 package com.suitcore.feature.sidemenu
 
+import android.R.attr.host
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.viewbinding.ViewBinding
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
@@ -20,6 +22,7 @@ import com.suitcore.feature.fragmentsample.SampleFragment
 import com.suitcore.feature.login.LoginActivity
 import com.suitcore.feature.member.MemberFragment
 import com.suitcore.helper.CommonConstant
+
 
 /**
  * Created by @dodydmw19 on 10, September, 2020
@@ -93,6 +96,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
 
         sideMenuAdapter?.selectedItem = 0
         finalFragment = MemberFragment()
+        //Navigation.findNavController(this).navigate(R.id.action)
         sideMenuBinding.tvTitle.text = getString(R.string.txt_toolbar_home)
         setContentFragment(finalFragment)
     }
@@ -101,8 +105,6 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
         viewSideMenuBinding.rvSideMenu.apply {
             setUpAsList()
             setAdapter(sideMenuAdapter)
-            setPullToRefreshEnable(false)
-            setLoadingMoreEnabled(false)
         }
         sideMenuAdapter?.setOnActionListener(this)
         sideMenuAdapter?.add(sideMenus)

@@ -232,14 +232,14 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
 
     fun finishLoad(recycler: BaseRecyclerView?) {
         recycler?.let {
-            it.completeRefresh()
-            it.loadMoreComplete()
+        //    it.completeRefresh()
+            //it.loadMoreComplete()
             it.stopShimmer()
         }
     }
 
     fun clearRecyclerView(recyclerView: BaseRecyclerView?) {
-        recyclerView?.destroy()
+        //recyclerView?.destroy()
     }
 
 }

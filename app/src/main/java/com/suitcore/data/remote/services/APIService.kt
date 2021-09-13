@@ -1,9 +1,9 @@
 package com.suitcore.data.remote.services
 
+import com.google.android.gms.location.places.Place
 import com.suitcore.data.model.User
 import com.suitcore.data.remote.wrapper.MapBoxResults
 import com.suitcore.data.remote.wrapper.Results
-import com.twitter.sdk.android.core.models.Place
 import io.reactivex.Flowable
 import io.reactivex.Single
 import kotlinx.coroutines.Deferred

@@ -5,7 +5,6 @@
     package="com.suitcore">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -27,7 +26,8 @@
         tools:replace="android:allowBackup"
         tools:targetApi="m">
 
-        <activity android:name=".feature.splashscreen.SplashScreenActivity">
+        <activity android:name=".feature.splashscreen.SplashScreenActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

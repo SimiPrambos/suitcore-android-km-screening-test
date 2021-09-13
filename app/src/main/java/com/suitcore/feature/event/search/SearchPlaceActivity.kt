@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
+import com.google.android.gms.location.places.Place
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -23,7 +24,6 @@ import com.suitcore.base.ui.BaseActivity
 import com.suitcore.databinding.ActivitySearchPlaceBinding
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
-import com.twitter.sdk.android.core.models.Place
 
 /**
  * Created by dodydmw19 on 1/14/19.

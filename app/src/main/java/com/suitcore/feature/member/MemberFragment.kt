@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import com.jcodecraeer.xrecyclerview.XRecyclerView
 import com.suitcore.R
 import com.suitcore.base.ui.BaseFragment
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
@@ -64,19 +63,6 @@ class MemberFragment : BaseFragment(), MemberView, MultiTypeMemberItemViewFirst.
         memberBinding.rvMember.apply {
             setUpAsList()
             setAdapter(memberAdapter)
-            setPullToRefreshEnable(true)
-            setLoadingMoreEnabled(true)
-            setLoadingListener(object : XRecyclerView.LoadingListener {
-                override fun onRefresh() {
-                    currentPage = 1
-                    loadData(currentPage)
-                }
-
-                override fun onLoadMore() {
-                    currentPage++
-                    loadData(currentPage)
-                }
-            })
         }
         memberAdapter?.setOnActionListener(this)
         memberAdapter?.setOnActionListener2(this)

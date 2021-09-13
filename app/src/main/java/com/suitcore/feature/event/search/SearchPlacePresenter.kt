@@ -3,13 +3,13 @@ package com.suitcore.feature.event.search
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.gms.location.places.Place
 import com.suitcore.BaseApplication
 import com.suitcore.R
 import com.suitcore.base.presenter.BasePresenter
 import com.suitcore.data.model.ErrorCodeHelper
 import com.suitcore.data.remote.services.APIService
 import com.suitcore.helper.CommonConstant
-import com.twitter.sdk.android.core.models.Place
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -87,7 +87,7 @@ class SearchPlacePresenter(var context: Context?) : BasePresenter<SearchPlaceVie
 //                                        mapPoint.fullAddress = address?.name
 //                                        mvpView?.onAddressReceive(LatLng(latitude, longitude), mapPoint)
 //                                    }
-                                    mvpView?.onAddressReceive(address?.name)
+                                    mvpView?.onAddressReceive(address?.name as String?)
 
                                 } else {
                                     mvpView?.onPlaceNotFound()

@@ -1,7 +1,7 @@
 package com.suitcore.feature.event.search
 
+import com.google.android.gms.location.places.Place
 import com.suitcore.base.presenter.MvpView
-import com.twitter.sdk.android.core.models.Place
 
 /**
  * Created by dodydmw19 on 1/14/19.
