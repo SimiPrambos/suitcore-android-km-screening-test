@@ -28,14 +28,13 @@ import com.suitcore.helper.CommonConstant
  * Created by @dodydmw19 on 10, September, 2020
  */
 
-class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnActionListener{
+class SideMenuActivity : BaseActivity<ActivitySideMenuBinding>(), SideMenuView, SideMenuItemView.OnActionListener{
 
     private var sideMenuPresenter: SideMenuPresenter? = null
     private var sideMenuAdapter: SideMenuAdapter? = SideMenuAdapter(this)
     private var isDrawerOpen = false
     private var finalFragment: Fragment? = null
     private var arraySideMenu: List<SideMenu>? = emptyList()
-    private lateinit var sideMenuBinding: ActivitySideMenuBinding
     private lateinit var viewSideMenuBinding: LayoutSideMenuBinding
 
     companion object {
@@ -44,12 +43,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
         }
     }
 
-    override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
-
-    private fun initBinding(layoutInflater: LayoutInflater) : ViewBinding {
-        sideMenuBinding = ActivitySideMenuBinding.inflate(layoutInflater)
-        return sideMenuBinding
-    }
+    override fun getViewBinding(): ActivitySideMenuBinding = ActivitySideMenuBinding.inflate(layoutInflater)
 
     override fun onViewReady(savedInstanceState: Bundle?) {
         initIncludeViewBinding()
@@ -62,7 +56,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     }
 
     private fun initIncludeViewBinding(){
-        viewSideMenuBinding = sideMenuBinding.sideMenu
+        viewSideMenuBinding = binding.sideMenu
     }
 
     private fun setupPresenter() {
@@ -72,7 +66,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     }
 
     private fun setUpSideBar() {
-        val drawerToggle = object : ActionBarDrawerToggle(this, sideMenuBinding.drawerLayout, sideMenuBinding.mToolbar, 0, 0) {
+        val drawerToggle = object : ActionBarDrawerToggle(this, binding.drawerLayout, binding.mToolbar, 0, 0) {
             override fun onDrawerOpened(drawerView: View) {
                 super.onDrawerOpened(drawerView)
                 isDrawerOpen = true
@@ -89,7 +83,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
 
         drawerToggle.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.black)
         drawerToggle.syncState()
-        sideMenuBinding.drawerLayout.addDrawerListener(drawerToggle)
+        binding.drawerLayout.addDrawerListener(drawerToggle)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
@@ -97,7 +91,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
         sideMenuAdapter?.selectedItem = 0
         finalFragment = MemberFragment()
         //Navigation.findNavController(this).navigate(R.id.action)
-        sideMenuBinding.tvTitle.text = getString(R.string.txt_toolbar_home)
+        binding.tvTitle.text = getString(R.string.txt_toolbar_home)
         setContentFragment(finalFragment)
     }
 
@@ -156,7 +150,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     }
 
     private fun closeDrawers() {
-        sideMenuBinding.drawerLayout.closeDrawers()
+        binding.drawerLayout.closeDrawers()
     }
 
     override fun onSideMenuLoaded(sideMenus: List<SideMenu>?) {
@@ -176,7 +170,7 @@ class SideMenuActivity : BaseActivity(), SideMenuView, SideMenuItemView.OnAction
     override fun onClicked(view: SideMenuItemView, position: Int) {
         view.getData().let { data ->
 
-            sideMenuBinding.tvTitle.text = data?.label
+            binding.tvTitle.text = data?.label
             finalFragment = null
             sideMenuAdapter?.selectedItem = position
             finalFragment = when (view.getData()?.url) {

@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
-import androidx.viewbinding.ViewBinding
 import com.google.android.gms.location.places.Place
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
@@ -29,7 +28,7 @@ import com.suitcore.helper.CommonUtils
  * Created by dodydmw19 on 1/14/19.
  */
 
-class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
+class SearchPlaceActivity : BaseActivity<ActivitySearchPlaceBinding>(), SearchPlaceView {
 
     private var placePresenter: SearchPlacePresenter? = null
 
@@ -44,17 +43,10 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
     private var currentLocation: LatLng? = null
     private var isFirstTime = true
 
-    private lateinit var searchPlaceBinding: ActivitySearchPlaceBinding
-
-    override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
-
-    private fun initBinding(layoutInflater: LayoutInflater) : ViewBinding {
-        searchPlaceBinding = ActivitySearchPlaceBinding.inflate(layoutInflater)
-        return searchPlaceBinding
-    }
+    override fun getViewBinding(): ActivitySearchPlaceBinding = ActivitySearchPlaceBinding.inflate(layoutInflater)
 
     override fun onViewReady(savedInstanceState: Bundle?) {
-        setupToolbar(searchPlaceBinding.mToolbar, true)
+        setupToolbar(binding.mToolbar, true)
         setupPresenter()
         setupMap()
         actionClick()
@@ -66,11 +58,11 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
     }
 
     private fun setupMap() {
-        searchPlaceBinding.mapEvent.getMapAsync { mapBoxMap ->
+        binding.mapEvent.getMapAsync { mapBoxMap ->
             this.mapBox = mapBoxMap
             mapBoxMap.setStyle(Style.MAPBOX_STREETS) { style ->
                 style.addImage(marker, BitmapFactory.decodeResource(this.resources, R.drawable.ic_pick_location))
-                symbolManager = SymbolManager(searchPlaceBinding.mapEvent, mapBoxMap, style, null, null)
+                symbolManager = SymbolManager(binding.mapEvent, mapBoxMap, style, null, null)
                 symbolManager?.iconAllowOverlap = true
 
                 mapBoxMap.uiSettings.isCompassEnabled = false
@@ -105,7 +97,7 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
         currentLocation = LatLng()
         currentLocation?.latitude = latitude
         currentLocation?.longitude = longitude
-        searchPlaceBinding.relSubmit.setBackgroundResource(R.drawable.bg_button_rounded_green)
+        binding.relSubmit.setBackgroundResource(R.drawable.bg_button_rounded_green)
     }
 
     override fun onPlaceReceive(places: List<Place>?) {
@@ -119,7 +111,7 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
 
     override fun onAddressReceive(address: String?) {
         address?.let { it ->
-            searchPlaceBinding.tvAddress.text = it
+            binding.tvAddress.text = it
         }
     }
 
@@ -140,14 +132,14 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
                     val feature: CarmenFeature? = PlaceAutocomplete.getPlace(data)
                     feature?.let{
                         addSymbol(LatLng((it.geometry() as Point).latitude(), (it.geometry() as Point).longitude()))
-                        searchPlaceBinding.tvAddress.text = it.text().toString()
+                        binding.tvAddress.text = it.text().toString()
                     }
                 }
         }
     }
 
     private fun actionClick() {
-        searchPlaceBinding.relSearch.setOnClickListener{
+        binding.relSearch.setOnClickListener{
             val intent = PlaceAutocomplete.IntentBuilder()
                     .accessToken(CommonConstant.MAP_BOX_TOKEN)
                     .placeOptions(PlaceOptions.builder()
@@ -159,15 +151,17 @@ class SearchPlaceActivity : BaseActivity(), SearchPlaceView {
             startActivityForResult(intent, 101)
         }
 
-        searchPlaceBinding.tvClear.setOnClickListener {
+        binding.tvClear.setOnClickListener {
            // actPlaceName.text.clear()
         }
 
-        searchPlaceBinding.relSubmit.setOnClickListener {
+        binding.relSubmit.setOnClickListener {
 //            if (currentLocation != null && currentLocation?.latitude != null && currentLocation?.longitude != null) {
 //
 //            }
         }
     }
+
+
 
 }

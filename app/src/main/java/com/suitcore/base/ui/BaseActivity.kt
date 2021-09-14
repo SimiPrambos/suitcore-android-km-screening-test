@@ -8,7 +8,6 @@ import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -21,14 +20,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.suitcore.base.presenter.MvpView
-import com.suitcore.base.ui.recyclerview.BaseRecyclerView
 import com.suitcore.base.ui.dialog.BaseDialog
 import com.suitcore.base.ui.dialog.BaseDialogInterface
+import com.suitcore.base.ui.recyclerview.BaseRecyclerView
 
 
-abstract class BaseActivity: AppCompatActivity(), MvpView {
+abstract class BaseActivity<VB : ViewBinding>: AppCompatActivity(), MvpView {
+    private var _binding: VB? = null
+    val binding get() = _binding!!
 
-    protected open var binding: ViewBinding? = null
     private var toolBar: Toolbar? = null
     private var mActionBar: ActionBar? = null
     private var activityIntent: Intent? = null
@@ -40,17 +40,12 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(getInflatedLayout(layoutInflater))
+        _binding = getViewBinding()
+        setContentView(binding.root)
         onViewReady(savedInstanceState)
     }
 
-    private fun getInflatedLayout(inflater: LayoutInflater): View {
-        this.binding = setBinding(inflater)
-        return binding?.root
-                ?: error("Please add your inflated binding class instance")
-    }
-
-    abstract fun setBinding(layoutInflater: LayoutInflater): ViewBinding
+    abstract fun getViewBinding(): VB
 
     protected fun setupToolbar(baseToolbar: Toolbar, needHomeButton: Boolean) {
         baseToolbar.title = ""
@@ -96,6 +91,10 @@ abstract class BaseActivity: AppCompatActivity(), MvpView {
             @Suppress("DEPRECATION")
             progressBar.indeterminateDrawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
         }
+    }
+
+    fun getActivity() : Activity{
+        return this
     }
 
     private fun clearActivity() {

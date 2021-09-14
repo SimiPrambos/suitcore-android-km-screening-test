@@ -1,6 +1,8 @@
 package com.suitcore.feature.splashscreen
 
+import android.annotation.SuppressLint
 import android.os.Handler
+import android.util.Log
 import com.suitcore.BaseApplication
 import com.suitcore.base.presenter.BasePresenter
 
@@ -14,6 +16,7 @@ class SplashScreenPresenter : BasePresenter<SplashScreenView> {
     private val time: Long = 3000
 
     init {
+
         BaseApplication.applicationComponent.inject(this)
     }
 

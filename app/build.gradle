@@ -158,8 +158,11 @@ dependencies {
 
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
+    // Google Play Core Library
     implementation 'com.google.android.play:core-ktx:1.8.1'
 
+    // Paging 3
+    implementation 'androidx.paging:paging-runtime-ktx:3.0.1'
 }
 
 // ADD THIS AT THE BOTTOM

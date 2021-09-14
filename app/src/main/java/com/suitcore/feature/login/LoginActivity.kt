@@ -5,9 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import androidx.viewbinding.ViewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -38,7 +36,7 @@ import timber.log.Timber
  * Created by dodydmw19 on 7/18/18.
  */
 
-class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
+class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginView, RemoteConfigView,
         GoogleListener, FacebookListener, InAppUpdateManager.InAppUpdateHandler {
 
     private var loginPresenter: LoginPresenter? = null
@@ -47,14 +45,8 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
 
     private var mGoogleHelper: GoogleSignInHelper? = null
     private var mFbHelper: FacebookHelper? = null
-    private lateinit var loginBinding: ActivityLoginBinding
 
-    override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
-
-    private fun initBinding(layoutInflater: LayoutInflater): ViewBinding {
-        loginBinding = ActivityLoginBinding.inflate(layoutInflater)
-        return loginBinding
-    }
+    override fun getViewBinding(): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater)
 
     override fun onViewReady(savedInstanceState: Bundle?) {
         setupPresenter()
@@ -208,15 +200,15 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
     }
 
     private fun actionClicked() {
-        loginBinding.relGoogle.setOnClickListener {
+        binding.relGoogle.setOnClickListener {
             mGoogleHelper?.performSignIn(this)
         }
 
-        loginBinding.relFacebook.setOnClickListener {
+        binding.relFacebook.setOnClickListener {
             mFbHelper?.performSignIn(this)
         }
 
-//        loginBinding.relTwitter.setOnClickListener {
+//        binding.relTwitter.setOnClickListener {
 //            if (CommonUtils.checkTwitterApp(this)) {
 //                mTwitterHelper?.performSignIn()
 //            } else {
@@ -224,11 +216,11 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
 //            }
 //        }
 
-        loginBinding.tvSkipToTabMenu.setOnClickListener {
+        binding.tvSkipToTabMenu.setOnClickListener {
             goToActivity(TabMenuActivity::class.java, null, clearIntent = true, isFinish = true)
         }
 
-        loginBinding.tvSkipToSideMenu.setOnClickListener {
+        binding.tvSkipToSideMenu.setOnClickListener {
             goToActivity(SideMenuActivity::class.java, null, clearIntent = true, isFinish = true)
         }
     }

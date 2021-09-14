@@ -27,10 +27,12 @@
         tools:targetApi="m">
 
         <activity android:name=".feature.splashscreen.SplashScreenActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.RemoveSplashScreenTheme"
+            android:noHistory="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
