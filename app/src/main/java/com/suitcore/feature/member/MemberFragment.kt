@@ -7,10 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.viewbinding.ViewBinding
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.suitcore.R
 import com.suitcore.base.ui.BaseFragment
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
+import com.suitcore.base.ui.recyclerview.EndlessScrollCallback
 import com.suitcore.data.model.ErrorCodeHelper
 import com.suitcore.data.model.User
 import com.suitcore.databinding.FragmentMemberBinding
@@ -20,11 +21,12 @@ import io.realm.RealmResults
  * Created by DODYDMW19 on 1/30/2018.
  */
 
-class MemberFragment : BaseFragment<FragmentMemberBinding>(), MemberView, MultiTypeMemberItemViewFirst.OnActionListener, MultiTypeMemberItemViewSecond.OnActionListener {
+class MemberFragment : BaseFragment<FragmentMemberBinding>(),
+    MemberView, SingleMemberItemView.OnActionListener{
 
     private var memberPresenter: MemberPresenter? = null
     private var currentPage: Int = 1
-    private var memberAdapter: MemberMultiTypeAdapter? = null
+    private var memberAdapter: MemberAdapter? = null
 
     companion object {
         fun newInstance(): Fragment {
@@ -54,14 +56,24 @@ class MemberFragment : BaseFragment<FragmentMemberBinding>(), MemberView, MultiT
     }
 
     private fun setupList() {
-        memberAdapter = context?.let { MemberMultiTypeAdapter(it) }
+        memberAdapter = context?.let { MemberAdapter(it) }
         binding.rvMember.apply {
             setUpAsList()
             setAdapter(memberAdapter)
+            setSwipeRefreshLoadingListener {
+                currentPage = 1
+                loadData(currentPage)
+            }
+            setLoadingListener(object : EndlessScrollCallback {
+                override fun loadMore() {
+                    currentPage++
+                    loadData(currentPage)
+                }
+            })
         }
         memberAdapter?.setOnActionListener(this)
-        memberAdapter?.setOnActionListener2(this)
         binding.rvMember.showShimmer()
+
     }
 
     private fun loadData(page: Int) {
@@ -146,6 +158,7 @@ class MemberFragment : BaseFragment<FragmentMemberBinding>(), MemberView, MultiT
 
     override fun onMemberEmpty() {
         showEmpty()
+        binding.rvMember.setLastPage()
     }
 
     override fun onFailed(error: Any?) {
@@ -153,14 +166,7 @@ class MemberFragment : BaseFragment<FragmentMemberBinding>(), MemberView, MultiT
         showError()
     }
 
-
-    override fun onClicked(view: MultiTypeMemberItemViewFirst?) {
-        view?.getData()?.let {
-            showToast(it.firstName.toString())
-        }
-    }
-
-    override fun onClicked(view: MultiTypeMemberItemViewSecond?) {
+    override fun onClicked(view: SingleMemberItemView?) {
         view?.getData()?.let {
             showToast(it.firstName.toString())
         }

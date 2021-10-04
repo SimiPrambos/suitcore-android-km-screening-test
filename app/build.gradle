@@ -95,8 +95,8 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_lib_version"
 
     //----- Logging
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 
     //----- The core of Reactive Programming
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
@@ -161,8 +161,8 @@ dependencies {
     // Google Play Core Library
     implementation 'com.google.android.play:core-ktx:1.8.1'
 
-    // Paging 3
-    implementation 'androidx.paging:paging-runtime-ktx:3.0.1'
+    // Swipe Refresh
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }
 
 // ADD THIS AT THE BOTTOM

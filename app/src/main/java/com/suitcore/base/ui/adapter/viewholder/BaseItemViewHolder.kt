@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 
-abstract class BaseItemViewHolder<in Data>(itemView: ViewBinding) : RecyclerView.ViewHolder(itemView.root){
+abstract class BaseItemViewHolder<in Any>(itemView: ViewBinding) : RecyclerView.ViewHolder(itemView.root){
     var baseContext: Context? = null
-    abstract fun bind(data: Data?)
+    abstract fun bind(data: Any?)
 }

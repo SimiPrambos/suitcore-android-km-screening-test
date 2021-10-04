@@ -21,10 +21,7 @@ class SampleFragment : BaseFragment<FragmentTestBinding>() {
         }
     }
 
-    override fun getViewBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): FragmentTestBinding = FragmentTestBinding.inflate(inflater, container, false)
+    override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentTestBinding = FragmentTestBinding.inflate(inflater, container, false)
 
     override fun onViewReady(savedInstanceState: Bundle?) {
         actionClicked()

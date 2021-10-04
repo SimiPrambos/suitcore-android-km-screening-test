@@ -98,7 +98,7 @@ class MemberPresenter : BasePresenter<MemberView> , CoroutineScope {
         if (data != null && data.isNotEmpty()) {
             if (currentPage == 1) {
                 // remove current realm data
-                mRealm?.deleteData(User())
+             //   mRealm?.deleteData(User())
             }
 
             // save to realm

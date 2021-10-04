@@ -1,16 +1,12 @@
 package com.suitcore.feature.sidemenu
 
-import android.R.attr.host
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
-import androidx.viewbinding.ViewBinding
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
@@ -172,7 +168,7 @@ class SideMenuActivity : BaseActivity<ActivitySideMenuBinding>(), SideMenuView, 
 
             binding.tvTitle.text = data?.label
             finalFragment = null
-            sideMenuAdapter?.selectedItem = position
+            sideMenuAdapter?.selectedItem = position + 1
             finalFragment = when (view.getData()?.url) {
                 CommonConstant.MENU_HOME -> {
                     MemberFragment.newInstance()

@@ -92,6 +92,8 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment(), MvpView {
         recycler?.let {
             //    it.completeRefresh()
             //it.loadMoreComplete()
+            it.getSwipeRefreshLayout().isRefreshing = false
+            it.releaseBlock()
             it.stopShimmer()
         }
     }

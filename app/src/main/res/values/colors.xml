@@ -12,7 +12,6 @@
     <color name="green">#009688</color>
 
     <!-- Grayscale -->
-    <color name="backgroundColor">#c4c9ce</color>
 
     <!--Transparent-->
     <color name="black_transparent80">#80000000</color>
