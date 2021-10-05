@@ -26,6 +26,9 @@
         tools:replace="android:allowBackup"
         tools:targetApi="m">
 
+        <meta-data android:name="com.onesignal.NotificationServiceExtension"
+            android:value="com.suitcore.onesignal.notification.NotificationServiceExtension" />
+
         <activity android:name=".feature.splashscreen.SplashScreenActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.RemoveSplashScreenTheme"

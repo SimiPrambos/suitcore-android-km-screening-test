@@ -6,7 +6,10 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.mapbox.mapboxsdk.Mapbox
+import com.onesignal.OSNotificationOpenedResult
+import com.onesignal.OSNotificationReceivedEvent
 import com.onesignal.OneSignal
+import com.suitcore.data.local.prefs.DataConstant
 import com.suitcore.data.local.prefs.SuitPreferences
 import com.suitcore.di.component.ApplicationComponent
 import com.suitcore.di.component.DaggerApplicationComponent
@@ -16,10 +19,9 @@ import com.suitcore.helper.ActivityLifecycleCallbacks
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
 import com.suitcore.helper.rxbus.RxBus
+import com.suitcore.onesignal.OneSignalHelper
 import io.realm.Realm
 import io.realm.RealmConfiguration
-import com.onesignal.OSDeviceState
-import com.suitcore.data.local.prefs.DataConstant
 
 
 /**
@@ -73,20 +75,7 @@ class BaseApplication : MultiDexApplication() {
             .build()
         Realm.setDefaultConfiguration(realmConfiguration)
 
-        // OneSignal Initialization
-        OneSignal.initWithContext(this)
-        OneSignal.setAppId(CommonConstant.ONE_SIGNAL_APP_ID)
-
-        val device = OneSignal.getDeviceState()
-        val userId = device?.userId //push player_id
-
-        userId?.let {
-            SuitPreferences.instance()?.saveString(DataConstant.PLAYER_ID, it)
-        }
-
-        if (BuildConfig.DEBUG) {
-            OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE)
-        }
+        OneSignalHelper.initOneSignal(this)
 
         Mapbox.getInstance(this, CommonConstant.MAP_BOX_TOKEN)
     }

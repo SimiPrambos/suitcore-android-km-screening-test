@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.suitcore.R
-import com.suitcore.databinding.LayoutBaseEmptyBinding
-import com.suitcore.databinding.LayoutBaseErrorBinding
-import com.suitcore.databinding.LayoutBaseRecyclerviewBinding
-import com.suitcore.databinding.LayoutBaseShimmerBinding
+import com.suitcore.databinding.*
 
 class BaseRecyclerView : FrameLayout {
 
@@ -31,7 +28,7 @@ class BaseRecyclerView : FrameLayout {
     private var mPaddingRight: Int = 0
     private var mScrollbarStyle: Int = 0
     private var mScrollbar: Int = 0
-    lateinit var baseEmptyBinding: LayoutBaseEmptyBinding
+    lateinit var baseEmptyBinding: LayoutBaseEmptyViewBinding
     lateinit var baseErrorBinding: LayoutBaseErrorBinding
     lateinit var baseShimmerBinding: LayoutBaseShimmerBinding
     lateinit var baseRecyclerBinding: LayoutBaseRecyclerviewBinding
@@ -105,7 +102,7 @@ class BaseRecyclerView : FrameLayout {
         mShimmerContainer = ShimmerFrameLayout(context)
 
         baseEmptyBinding =
-            LayoutBaseEmptyBinding.inflate(LayoutInflater.from(context), mEmptyView, false)
+            LayoutBaseEmptyViewBinding.inflate(LayoutInflater.from(context), mEmptyView, false)
         baseErrorBinding =
             LayoutBaseErrorBinding.inflate(LayoutInflater.from(context), mErrorView, false)
         baseShimmerBinding =
@@ -164,6 +161,19 @@ class BaseRecyclerView : FrameLayout {
      * Below are some methods for setting the RecyclerView attributes
      */
 
+    fun getSwipeRefreshLayout(): SwipeRefreshLayout {
+        return baseRecyclerBinding.swipeRefresh
+    }
+
+    fun setSwipeRefreshLoadingListener(listener: SwipeRefreshLayout.OnRefreshListener) {
+        baseRecyclerBinding.swipeRefresh.setColorSchemeResources(
+            R.color.colorPrimary,
+            R.color.colorPrimaryDark,
+            R.color.white
+        )
+        baseRecyclerBinding.swipeRefresh.setOnRefreshListener(listener)
+    }
+
     fun releaseBlock() {
         baseRecyclerBinding.recyclerView.releaseBlock()
     }
@@ -185,7 +195,6 @@ class BaseRecyclerView : FrameLayout {
             mRecyclerView.clipToPadding = it
         }
     }
-
 
     fun setHasFixedSize(hasFixedSize: Boolean) {
         baseRecyclerBinding.recyclerView.setHasFixedSize(hasFixedSize)
@@ -210,38 +219,6 @@ class BaseRecyclerView : FrameLayout {
     fun getAdapter(): RecyclerView.Adapter<*>? {
         return baseRecyclerBinding.recyclerView.adapter
     }
-
-    /**
-     * Below are some methods from XRecyclerView
-     */
-
-//    fun destroy() {
-//        baseRecyclerBinding.recyclerView.destroy()
-//    }
-
-//    fun addHeaderView(view: View) {
-//        baseRecyclerBinding.recyclerView.addHeaderView(view)
-//    }
-
-//    fun loadMoreComplete() {
-//        baseRecyclerBinding.recyclerView.loadMoreComplete()
-//    }
-
-//    fun setNoMore(isNoMore: Boolean) {
-//        baseRecyclerBinding.recyclerView.setNoMore(isNoMore)
-//    }
-
-//    fun setPullToRefreshEnable(isPullToRefresh: Boolean) {
-//        baseRecyclerBinding.recyclerView.setPullRefreshEnabled(isPullToRefresh)
-//    }
-
-//    fun completeRefresh() {
-//        baseRecyclerBinding.recyclerView.refreshComplete()
-//    }
-
-//    fun setLoadingMoreEnabled(isLoadMore: Boolean) {
-//        baseRecyclerBinding.recyclerView.setLoadingMoreEnabled(isLoadMore)
-//    }
 
     fun setAdapter(adapter: RecyclerView.Adapter<*>?) {
         baseRecyclerBinding.recyclerView.adapter = adapter
@@ -378,16 +355,4 @@ class BaseRecyclerView : FrameLayout {
         baseErrorBinding.btnError.setOnClickListener(listener)
     }
 
-    fun getSwipeRefreshLayout(): SwipeRefreshLayout {
-        return baseRecyclerBinding.swipeRefresh
-    }
-
-    fun setSwipeRefreshLoadingListener(listener: SwipeRefreshLayout.OnRefreshListener) {
-        baseRecyclerBinding.swipeRefresh.setColorSchemeResources(
-            R.color.colorPrimary,
-            R.color.colorPrimaryDark,
-            R.color.white
-        )
-        baseRecyclerBinding.swipeRefresh.setOnRefreshListener(listener)
-    }
 }
