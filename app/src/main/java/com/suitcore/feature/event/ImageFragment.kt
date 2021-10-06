@@ -29,5 +29,4 @@ class ImageFragment : BaseFragment<ItemEventBinding>() {
         binding.tvItemEventName.text = data?.name
     }
 
-
 }
