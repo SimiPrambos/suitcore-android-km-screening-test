@@ -2,6 +2,7 @@ package com.suitcore.feature.splashscreen
 
 import android.annotation.SuppressLint
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.suitcore.BaseApplication
 import com.suitcore.base.presenter.BasePresenter
@@ -16,7 +17,6 @@ class SplashScreenPresenter : BasePresenter<SplashScreenView> {
     private val time: Long = 3000
 
     init {
-
         BaseApplication.applicationComponent.inject(this)
     }
 
@@ -25,7 +25,9 @@ class SplashScreenPresenter : BasePresenter<SplashScreenView> {
     }
 
     fun initialize() {
-        Handler().postDelayed({ mvpView?.navigateToMainView() }, time)
+        Handler(Looper.getMainLooper()).postDelayed({
+            mvpView?.navigateToMainView()
+        }, time)
     }
 
     override fun attachView(view: SplashScreenView) {

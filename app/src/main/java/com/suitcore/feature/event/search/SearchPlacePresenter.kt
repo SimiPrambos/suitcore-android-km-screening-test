@@ -1,18 +1,14 @@
 package com.suitcore.feature.event.search
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.suitcore.BaseApplication
 import com.suitcore.R
 import com.suitcore.base.presenter.BasePresenter
-import com.suitcore.data.model.ErrorCodeHelper
 import com.suitcore.data.model.Place
 import com.suitcore.data.remote.services.APIService
 import com.suitcore.helper.CommonConstant
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

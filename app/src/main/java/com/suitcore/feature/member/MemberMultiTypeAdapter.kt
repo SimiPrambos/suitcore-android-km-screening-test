@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.suitcore.base.ui.adapter.BaseRecyclerMultiTypeAdapter
 import com.suitcore.data.model.User
-import com.suitcore.databinding.ItemLoadingBinding
 import com.suitcore.databinding.ItemMember2Binding
 import com.suitcore.databinding.ItemMemberBinding
 
@@ -23,7 +22,6 @@ class MemberMultiTypeAdapter(var context: Context?) : BaseRecyclerMultiTypeAdapt
 
     private lateinit var itemMemberBinding: ItemMemberBinding
     private lateinit var itemMember2rBinding: ItemMember2Binding
-    private lateinit var itemLoading: ItemLoadingBinding
 
     private var mOnActionListener: MultiTypeMemberItemViewFirst.OnActionListener? = null
     private var mOnActionListener2: MultiTypeMemberItemViewSecond.OnActionListener? = null

@@ -226,19 +226,13 @@ abstract class BaseActivity<VB : ViewBinding>: AppCompatActivity(), MvpView {
                 baseDialog?.dismissDialog()
             }
         }
-//        coreDialog?.visibility = View.GONE
     }
 
     fun finishLoad(recycler: BaseRecyclerView?) {
         recycler?.let {
-        //    it.completeRefresh()
-            //it.loadMoreComplete()
             it.stopShimmer()
         }
     }
 
-    fun clearRecyclerView(recyclerView: BaseRecyclerView?) {
-        //recyclerView?.destroy()
-    }
 
 }

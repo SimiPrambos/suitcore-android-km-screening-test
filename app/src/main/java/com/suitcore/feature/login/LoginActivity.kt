@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.install.model.ActivityResult
@@ -109,7 +110,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginView, RemoteCon
 
     private fun setupSocialLogin() {
         // Google  initialization
-        mGoogleHelper = GoogleSignInHelper(this, R.string.google_default_web_client_id, this)
+        mGoogleHelper = GoogleSignInHelper(this, getString(R.string.google_default_web_client_id), this)
 
         // fb initialization
         mFbHelper = FacebookHelper(this, getString(R.string.facebook_request_field))

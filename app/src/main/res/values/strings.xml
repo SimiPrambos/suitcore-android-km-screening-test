@@ -6,12 +6,10 @@
     <string name="txt_empty_member">No member found</string>
     <string name="txt_empty_member_content">There is no member to view</string>
 
-    <string name="txt_error_global">An occur errors..</string>
-
     <!-- Twitter -->
 
     <!-- Google -->
-    <string name="google_default_web_client_id">AAAA0Szs51c:APA91bGK7PDC7FFAxaYheviO3w4rYhJHcJtumjf21RoSdXrakatKwlMcns-BRRoEBzT4fSpXB2hYetHQobWSayjNqch8CDS7KWUqEqUjoyngD00_czYleGG9x9yJm_feLlCWQI060--U</string>
+    <string name="google_default_web_client_id">898401888087-tpqokrn96nico2irun0glt2fodeq0ui6.apps.googleusercontent.com</string>
 
     <!-- Facebook -->
     <string name="facebook_app_id">1879532772347939</string>
@@ -35,7 +33,6 @@
     <string name="txt_show_fragment">Show Fragment</string>
     <string name="txt_toolbar_search">Search</string>
     <string name="txt_hint_input_name">Search Location</string>
-    <string name="txt_button_search">Search</string>
 
     <string name="txt_title">Title</string>
     <string name="txt_menu_one">Members</string>

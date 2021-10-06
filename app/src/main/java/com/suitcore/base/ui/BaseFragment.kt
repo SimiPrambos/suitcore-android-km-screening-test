@@ -98,10 +98,6 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment(), MvpView {
         }
     }
 
-    fun clearRecyclerView(recyclerView: BaseRecyclerView?) {
-        //recyclerView?.destroy()
-    }
-
     //Custom Dialog
     override fun showDialogLoading(dismiss: Boolean, message: String?) {
         dismissDialog = dismiss
