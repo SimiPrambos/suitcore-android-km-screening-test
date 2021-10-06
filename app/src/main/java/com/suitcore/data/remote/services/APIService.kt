@@ -28,5 +28,5 @@ interface APIService {
             @Query("page") page: Int): Deferred<Results<User>>
 
     @GET
-    fun searchPlace(@Url url: String?): Flowable<MapBoxResults<Place>>
+    fun searchPlaceAsync(@Url url: String?): Deferred<MapBoxResults<Place>>
 }
