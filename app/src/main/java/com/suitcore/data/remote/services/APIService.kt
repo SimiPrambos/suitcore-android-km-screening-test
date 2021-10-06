@@ -1,6 +1,6 @@
 package com.suitcore.data.remote.services
 
-import com.google.android.gms.location.places.Place
+import com.suitcore.data.model.Place
 import com.suitcore.data.model.User
 import com.suitcore.data.remote.wrapper.MapBoxResults
 import com.suitcore.data.remote.wrapper.Results

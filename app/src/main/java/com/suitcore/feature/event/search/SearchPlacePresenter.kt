@@ -2,12 +2,13 @@ package com.suitcore.feature.event.search
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.gms.location.places.Place
 import com.suitcore.BaseApplication
 import com.suitcore.R
 import com.suitcore.base.presenter.BasePresenter
 import com.suitcore.data.model.ErrorCodeHelper
+import com.suitcore.data.model.Place
 import com.suitcore.data.remote.services.APIService
 import com.suitcore.helper.CommonConstant
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -64,7 +65,7 @@ class SearchPlacePresenter(var context: Context?) : BasePresenter<SearchPlaceVie
 
     @SuppressLint("CheckResult")
     fun reverseGeoCoder(latitude: Double, longitude: Double) {
-        val url: String? = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitude +","+ latitude + ".json" +
+        val url: String = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitude +","+ latitude + ".json" +
                 "?access_token=" + CommonConstant.MAP_BOX_TOKEN
 
         mCompositeDisposable?.add(
@@ -87,7 +88,7 @@ class SearchPlacePresenter(var context: Context?) : BasePresenter<SearchPlaceVie
 //                                        mapPoint.fullAddress = address?.name
 //                                        mvpView?.onAddressReceive(LatLng(latitude, longitude), mapPoint)
 //                                    }
-                                    mvpView?.onAddressReceive(address?.name as String?)
+                                    mvpView?.onAddressReceive(address?.placeName)
 
                                 } else {
                                     mvpView?.onPlaceNotFound()
@@ -97,6 +98,7 @@ class SearchPlacePresenter(var context: Context?) : BasePresenter<SearchPlaceVie
                             }
                         }, {
                             //mvpView?.hideLoading()
+                            Log.d("error", it.localizedMessage + " --")
                             mvpView?.onPlaceNotFound()
                             mvpView?.hideLoading()
                         })

@@ -5,9 +5,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.places.Place
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -20,6 +18,7 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
+import com.suitcore.data.model.Place
 import com.suitcore.databinding.ActivitySearchPlaceBinding
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
@@ -103,7 +102,7 @@ class SearchPlaceActivity : BaseActivity<ActivitySearchPlaceBinding>(), SearchPl
     override fun onPlaceReceive(places: List<Place>?) {
         if (places != null && places.isNotEmpty()) {
             places.forEach { p ->
-                arrayPlaceOfString.add(p.name.toString())
+                arrayPlaceOfString.add(p.placeName.toString())
                 arrayPlace.add(p)
             }
         }
