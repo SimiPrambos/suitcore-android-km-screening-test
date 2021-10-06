@@ -35,7 +35,7 @@ class MemberMultiTypeAdapter(var context: Context?) : BaseRecyclerMultiTypeAdapt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
+        return when(viewType){
             TYPE_1 -> {
                 itemMemberBinding = ItemMemberBinding.inflate(LayoutInflater.from(context) , parent,false)
                 val view = MultiTypeMemberItemViewFirst(itemMemberBinding)

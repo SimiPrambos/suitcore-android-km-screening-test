@@ -6,6 +6,8 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.mapbox.mapboxsdk.Mapbox
+import com.onesignal.OSNotificationOpenedResult
+import com.onesignal.OSNotificationReceivedEvent
 import com.onesignal.OneSignal
 import com.suitcore.data.local.prefs.DataConstant
 import com.suitcore.data.local.prefs.SuitPreferences
@@ -17,9 +19,10 @@ import com.suitcore.helper.ActivityLifecycleCallbacks
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
 import com.suitcore.helper.rxbus.RxBus
-import com.suitcore.onesignal.NotificationOpenedHandler
+import com.suitcore.onesignal.OneSignalHelper
 import io.realm.Realm
 import io.realm.RealmConfiguration
+
 
 /**
  * Created by DODYDMW19 on 1/30/2018.
@@ -58,34 +61,21 @@ class BaseApplication : MultiDexApplication() {
 
         appContext = applicationContext
         applicationComponent = DaggerApplicationComponent.builder()
-                .applicationModule(ApplicationModule(this))
-                .build()
+            .applicationModule(ApplicationModule(this))
+            .build()
 
         Fresco.initialize(this)
 
         Realm.init(this)
         val realmConfiguration = RealmConfiguration.Builder()
-                .schemaVersion(1)
-                .deleteRealmIfMigrationNeeded()
-                //.encryptionKey(CommonUtils.getKey()) // encrypt realm
-                .build()
+            .schemaVersion(1)
+            .allowWritesOnUiThread(true)
+            .deleteRealmIfMigrationNeeded()
+            //.encryptionKey(CommonUtils.getKey()) // encrypt realm
+            .build()
         Realm.setDefaultConfiguration(realmConfiguration)
 
-        // OneSignal Initialization
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .unsubscribeWhenNotificationsAreDisabled(true)
-                .setNotificationOpenedHandler(NotificationOpenedHandler())
-                .init()
-        OneSignal.enableVibrate(true)
-        OneSignal.enableSound(true)
-        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE)
-
-        OneSignal.idsAvailable { userId, _ ->
-            if (userId != null) {
-                SuitPreferences.instance()?.saveString(DataConstant.PLAYER_ID, userId)
-            }
-        }
+        OneSignalHelper.initOneSignal(this)
 
         Mapbox.getInstance(this, CommonConstant.MAP_BOX_TOKEN)
     }

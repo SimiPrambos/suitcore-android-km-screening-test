@@ -1,9 +1,9 @@
 package com.suitcore.data.remote.services
 
+import com.suitcore.data.model.Place
 import com.suitcore.data.model.User
 import com.suitcore.data.remote.wrapper.MapBoxResults
 import com.suitcore.data.remote.wrapper.Results
-import com.twitter.sdk.android.core.models.Place
 import io.reactivex.Flowable
 import io.reactivex.Single
 import kotlinx.coroutines.Deferred
@@ -28,5 +28,5 @@ interface APIService {
             @Query("page") page: Int): Deferred<Results<User>>
 
     @GET
-    fun searchPlace(@Url url: String?): Flowable<MapBoxResults<Place>>
+    fun searchPlaceAsync(@Url url: String?): Deferred<MapBoxResults<Place>>
 }

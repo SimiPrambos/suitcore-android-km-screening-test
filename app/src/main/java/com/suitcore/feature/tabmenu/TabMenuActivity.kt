@@ -2,12 +2,10 @@ package com.suitcore.feature.tabmenu
 
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.viewbinding.ViewBinding
 import androidx.viewpager.widget.ViewPager
 import com.suitcore.R
 import com.suitcore.base.ui.BaseActivity
@@ -15,23 +13,16 @@ import com.suitcore.databinding.ActivityTabMenuBinding
 import com.suitcore.databinding.LayoutBottomMenuBinding
 import com.suitcore.feature.login.LoginActivity
 
-
 /**
  * Created by @dodydmw19 on 10, September, 2020
  */
 
-class TabMenuActivity : BaseActivity() {
+class TabMenuActivity : BaseActivity<ActivityTabMenuBinding>() {
 
     private var mPagerAdapter: MainPagerAdapter? = null
-    private lateinit var tabMenuBinding : ActivityTabMenuBinding
     private lateinit var linBottomNavBinding: LayoutBottomMenuBinding
 
-    override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
-
-    private fun initBinding(layoutInflater: LayoutInflater) : ViewBinding {
-        tabMenuBinding = ActivityTabMenuBinding.inflate(layoutInflater)
-        return tabMenuBinding
-    }
+    override fun getViewBinding(): ActivityTabMenuBinding = ActivityTabMenuBinding.inflate(layoutInflater)
 
     override fun onViewReady(savedInstanceState: Bundle?) {
         initIncludeViewBinding()
@@ -40,19 +31,19 @@ class TabMenuActivity : BaseActivity() {
     }
 
     private fun initIncludeViewBinding(){
-        linBottomNavBinding = tabMenuBinding.linBottomNav
+        linBottomNavBinding = binding.linBottomNav
     }
 
     private fun setUpPagerListener() {
         mPagerAdapter = MainPagerAdapter(supportFragmentManager)
-        tabMenuBinding.pager.clipToPadding = false
-        tabMenuBinding.pager.offscreenPageLimit = 3
+        binding.pager.clipToPadding = false
+        binding.pager.offscreenPageLimit = 3
 
         val gap = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics).toInt()
 
-        tabMenuBinding.pager.pageMargin = gap
-        tabMenuBinding.pager.adapter = mPagerAdapter
-        tabMenuBinding.pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.pager.pageMargin = gap
+        binding.pager.adapter = mPagerAdapter
+        binding.pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
@@ -66,7 +57,7 @@ class TabMenuActivity : BaseActivity() {
             }
         })
 
-        tabMenuBinding.pager.setPageTransformer(false) { view, _ ->
+        binding.pager.setPageTransformer(false) { view, _ ->
             view.alpha = 0f
             view.visibility = View.VISIBLE
 
@@ -77,7 +68,7 @@ class TabMenuActivity : BaseActivity() {
     }
 
     private fun setTitle(title: String) {
-        tabMenuBinding.tvTitle.text = title
+        binding.tvTitle.text = title
     }
 
     private fun setSelectedNavigation(position: Int) {
@@ -110,15 +101,15 @@ class TabMenuActivity : BaseActivity() {
 
     private fun actionClick() {
         linBottomNavBinding.relButton1.setOnClickListener {
-            tabMenuBinding.pager.currentItem = 0
+            binding.pager.currentItem = 0
         }
 
         linBottomNavBinding.relButton2.setOnClickListener {
-            tabMenuBinding.pager.currentItem = 1
+            binding.pager.currentItem = 1
         }
 
         linBottomNavBinding.relButton3.setOnClickListener {
-            tabMenuBinding.pager.currentItem = 2
+            binding.pager.currentItem = 2
         }
 
         linBottomNavBinding.relButton4.setOnClickListener {
@@ -126,4 +117,5 @@ class TabMenuActivity : BaseActivity() {
         }
 
     }
+
 }

@@ -8,6 +8,10 @@
         <item name="colorAccent">@color/colorPrimaryDark</item>
     </style>
 
+    <style name="Theme.RemoveSplashScreenTheme" parent="@style/AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="BtnLayout">
         <item name="android:background">@drawable/bg_button_rounded</item>
         <item name="android:clickable">true</item>

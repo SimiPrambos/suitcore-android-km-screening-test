@@ -1,5 +1,6 @@
 package com.suitcore.base.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
@@ -106,8 +107,10 @@ abstract class BaseRecyclerMultiTypeAdapter<Any, Holder : RecyclerView.ViewHolde
         remove(position)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun clear() {
         mData.clear()
         notifyDataSetChanged()
     }
+
 }

@@ -2,7 +2,8 @@ package com.suitcore.helper
 
 object CommonConstant {
 
-    const val MAP_BOX_TOKEN = "pk.eyJ1Ijoic3VpdG1vYmlsZSIsImEiOiJjanFxMjh1aXcwN3NxNDJwNjg3emI3cHdvIn0.JWmlJdRqTN3k10f4kpEfdw"
+    const val MAP_BOX_TOKEN = "sk.eyJ1IjoiZG9keWRtdzE5IiwiYSI6ImNrdGk5OXk2bTA4emwycnFycXU0ZDhraTUifQ.bVJdLVBM0QkMkgbajgIBQw"
+    const val ONE_SIGNAL_APP_ID = "887ba0cd-f47a-435b-8142-03d3a7fc7f41"
 
     // for intent extras constant
     const val APP_CRASH = "app_crash"

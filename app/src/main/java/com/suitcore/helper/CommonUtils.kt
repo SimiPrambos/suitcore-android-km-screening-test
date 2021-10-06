@@ -29,15 +29,6 @@ class CommonUtils {
 
     companion object {
 
-        fun checkTwitterApp(context: Context): Boolean {
-            return try {
-                var info = context.packageManager.getApplicationInfo("com.twitter.android", 0)
-                true
-            } catch (e: NameNotFoundException) {
-                false
-            }
-        }
-
         fun openAppInStore(context: Context) {
             // you can also use BuildConfig.APPLICATION_ID
             try {

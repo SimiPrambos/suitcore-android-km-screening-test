@@ -68,6 +68,7 @@
         android:layout_height="@dimen/_40sdp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@+id/tvSkipToTabMenu"
         app:layout_constraintEnd_toEndOf="parent"

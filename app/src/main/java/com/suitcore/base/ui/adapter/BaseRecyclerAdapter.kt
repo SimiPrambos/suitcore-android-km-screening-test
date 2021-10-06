@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.suitcore.base.ui.adapter.viewholder.BaseItemViewHolder
 import java.util.*
 
-abstract class BaseRecyclerAdapter<Data, Holder : BaseItemViewHolder<Data>> : RecyclerView.Adapter<Holder>() {
+abstract class BaseRecyclerAdapter<Any, Holder : BaseItemViewHolder<Any>> : RecyclerView.Adapter<Holder>() {
 
-    private var mData: ArrayList<Data> = ArrayList()
+    protected var mData: ArrayList<Any> = ArrayList()
     private var mItemClickListener: OnItemClickListener? = null
     private var mLongItemClickListener: OnLongItemClickListener? = null
 
-    val data: List<Data>
+    val data: List<Any>
         get() = mData
 
     init {
@@ -60,21 +60,21 @@ abstract class BaseRecyclerAdapter<Data, Holder : BaseItemViewHolder<Data>> : Re
         this.mLongItemClickListener = longItemClickListener
     }
 
-    fun add(item: Data) {
+    fun add(item: Any) {
         mData.add(item)
         notifyItemInserted(mData.size - 1)
     }
 
-    fun addAll(items: List<Data>) {
+    fun addAll(items: List<Any>) {
         add(items)
     }
 
-    fun add(item: Data, position: Int) {
+    fun add(item: Any, position: Int) {
         mData.add(position, item)
         notifyItemInserted(position)
     }
 
-    fun add(items: List<Data>) {
+    fun add(items: List<Any>) {
         val size = items.size
         for (i in 0 until size) {
             mData.add(items[i])
@@ -82,7 +82,7 @@ abstract class BaseRecyclerAdapter<Data, Holder : BaseItemViewHolder<Data>> : Re
         notifyDataSetChanged()
     }
 
-    fun addOrUpdate(item: Data) {
+    fun addOrUpdate(item: Any) {
         val i = mData.indexOf(item)
         if (i >= 0) {
             mData[i] = item
@@ -92,7 +92,7 @@ abstract class BaseRecyclerAdapter<Data, Holder : BaseItemViewHolder<Data>> : Re
         }
     }
 
-    fun addOrUpdate(items: List<Data>) {
+    fun addOrUpdate(items: List<Any>) {
         val size = items.size
         for (i in 0 until size) {
             val item = items[i]
@@ -106,11 +106,11 @@ abstract class BaseRecyclerAdapter<Data, Holder : BaseItemViewHolder<Data>> : Re
         notifyDataSetChanged()
     }
 
-    fun getData(): ArrayList<Data>? {
+    fun getData(): ArrayList<Any>? {
         return mData
     }
 
-    fun getData(position: Int): Data {
+    fun getData(position: Int): Any {
         return mData[position - 1]
     }
 
@@ -121,7 +121,7 @@ abstract class BaseRecyclerAdapter<Data, Holder : BaseItemViewHolder<Data>> : Re
         }
     }
 
-    fun remove(item: Data) {
+    fun remove(item: Any) {
         val position = mData.indexOf(item)
         remove(position)
     }

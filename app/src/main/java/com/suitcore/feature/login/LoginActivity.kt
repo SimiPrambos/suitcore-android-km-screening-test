@@ -5,9 +5,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import androidx.viewbinding.ViewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -32,32 +31,23 @@ import com.suitcore.helper.socialauth.facebook.FacebookHelper
 import com.suitcore.helper.socialauth.facebook.FacebookListener
 import com.suitcore.helper.socialauth.google.GoogleListener
 import com.suitcore.helper.socialauth.google.GoogleSignInHelper
-import com.suitcore.helper.socialauth.twitter.TwitterHelper
-import com.suitcore.helper.socialauth.twitter.TwitterListener
 import timber.log.Timber
 
 /**
  * Created by dodydmw19 on 7/18/18.
  */
 
-class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
-        GoogleListener, FacebookListener, TwitterListener, InAppUpdateManager.InAppUpdateHandler {
+class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginView, RemoteConfigView,
+        GoogleListener, FacebookListener, InAppUpdateManager.InAppUpdateHandler {
 
     private var loginPresenter: LoginPresenter? = null
     private var remoteConfigPresenter: RemoteConfigPresenter? = null
     private var inAppUpdateManager: InAppUpdateManager? = null
 
     private var mGoogleHelper: GoogleSignInHelper? = null
-    private var mTwitterHelper: TwitterHelper? = null
     private var mFbHelper: FacebookHelper? = null
-    private lateinit var loginBinding: ActivityLoginBinding
 
-    override fun setBinding(layoutInflater: LayoutInflater) = initBinding(layoutInflater)
-
-    private fun initBinding(layoutInflater: LayoutInflater): ViewBinding {
-        loginBinding = ActivityLoginBinding.inflate(layoutInflater)
-        return loginBinding
-    }
+    override fun getViewBinding(): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater)
 
     override fun onViewReady(savedInstanceState: Bundle?) {
         setupPresenter()
@@ -120,14 +110,7 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
 
     private fun setupSocialLogin() {
         // Google  initialization
-        mGoogleHelper = GoogleSignInHelper(this, R.string.google_default_web_client_id, this)
-
-        // twitter initialization
-        mTwitterHelper = TwitterHelper(
-                R.string.twitter_api_key,
-                R.string.twitter_secret_key,
-                this,
-                this)
+        mGoogleHelper = GoogleSignInHelper(this, getString(R.string.google_default_web_client_id), this)
 
         // fb initialization
         mFbHelper = FacebookHelper(this, getString(R.string.facebook_request_field))
@@ -165,15 +148,6 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
     }
 
     override fun onFbSignInSuccess(authToken: String?, userId: String?) {
-        // send token & user_id to server
-        loginPresenter?.login()
-    }
-
-    override fun onTwitterError(errorMessage: String?) {
-        showToast(errorMessage.toString())
-    }
-
-    override fun onTwitterSignIn(authToken: String?, secret: String?, userId: String?) {
         // send token & user_id to server
         loginPresenter?.login()
     }
@@ -227,27 +201,27 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
     }
 
     private fun actionClicked() {
-        loginBinding.relGoogle.setOnClickListener {
+        binding.relGoogle.setOnClickListener {
             mGoogleHelper?.performSignIn(this)
         }
 
-        loginBinding.relFacebook.setOnClickListener {
+        binding.relFacebook.setOnClickListener {
             mFbHelper?.performSignIn(this)
         }
 
-        loginBinding.relTwitter.setOnClickListener {
-            if (CommonUtils.checkTwitterApp(this)) {
-                mTwitterHelper?.performSignIn()
-            } else {
-                showToast(getString(R.string.txt_twitter_not_installed))
-            }
-        }
+//        binding.relTwitter.setOnClickListener {
+//            if (CommonUtils.checkTwitterApp(this)) {
+//                mTwitterHelper?.performSignIn()
+//            } else {
+//                showToast(getString(R.string.txt_twitter_not_installed))
+//            }
+//        }
 
-        loginBinding.tvSkipToTabMenu.setOnClickListener {
+        binding.tvSkipToTabMenu.setOnClickListener {
             goToActivity(TabMenuActivity::class.java, null, clearIntent = true, isFinish = true)
         }
 
-        loginBinding.tvSkipToSideMenu.setOnClickListener {
+        binding.tvSkipToSideMenu.setOnClickListener {
             goToActivity(SideMenuActivity::class.java, null, clearIntent = true, isFinish = true)
         }
     }
@@ -271,7 +245,7 @@ class LoginActivity : BaseActivity(), LoginView, RemoteConfigView,
         } else {
             if (data != null) {
                 mGoogleHelper?.onActivityResult(requestCode, resultCode, data)
-                mTwitterHelper?.onActivityResult(requestCode, resultCode, data)
+               // mTwitterHelper?.onActivityResult(requestCode, resultCode, data)
                 mFbHelper?.onActivityResult(requestCode, resultCode, data)
             }
         }

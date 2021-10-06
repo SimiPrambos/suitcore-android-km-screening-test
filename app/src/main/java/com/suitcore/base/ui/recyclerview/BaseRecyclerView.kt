@@ -8,13 +8,10 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.jcodecraeer.xrecyclerview.XRecyclerView
 import com.suitcore.R
-import com.suitcore.databinding.LayoutBaseEmptyBinding
-import com.suitcore.databinding.LayoutBaseErrorBinding
-import com.suitcore.databinding.LayoutBaseRecyclerviewBinding
-import com.suitcore.databinding.LayoutBaseShimmerBinding
+import com.suitcore.databinding.*
 
 class BaseRecyclerView : FrameLayout {
 
@@ -31,7 +28,7 @@ class BaseRecyclerView : FrameLayout {
     private var mPaddingRight: Int = 0
     private var mScrollbarStyle: Int = 0
     private var mScrollbar: Int = 0
-    lateinit var baseEmptyBinding: LayoutBaseEmptyBinding
+    lateinit var baseEmptyBinding: LayoutBaseEmptyViewBinding
     lateinit var baseErrorBinding: LayoutBaseErrorBinding
     lateinit var baseShimmerBinding: LayoutBaseShimmerBinding
     lateinit var baseRecyclerBinding: LayoutBaseRecyclerviewBinding
@@ -47,7 +44,11 @@ class BaseRecyclerView : FrameLayout {
         initView()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         initAttrs(attrs)
         initView()
     }
@@ -57,10 +58,14 @@ class BaseRecyclerView : FrameLayout {
         try {
             mClipToPadding = a.getBoolean(R.styleable.BaseRecyclerView_recyclerClipToPadding, false)
             mPadding = a.getDimension(R.styleable.BaseRecyclerView_recyclerPadding, -1.0f).toInt()
-            mPaddingLeft = a.getDimension(R.styleable.BaseRecyclerView_recyclerPaddingLeft, 0.0f).toInt()
-            mPaddingTop = a.getDimension(R.styleable.BaseRecyclerView_recyclerPaddingTop, 0.0f).toInt()
-            mPaddingRight = a.getDimension(R.styleable.BaseRecyclerView_recyclerPaddingRight, 0.0f).toInt()
-            mPaddingBottom = a.getDimension(R.styleable.BaseRecyclerView_recyclerPaddingBottom, 0.0f).toInt()
+            mPaddingLeft =
+                a.getDimension(R.styleable.BaseRecyclerView_recyclerPaddingLeft, 0.0f).toInt()
+            mPaddingTop =
+                a.getDimension(R.styleable.BaseRecyclerView_recyclerPaddingTop, 0.0f).toInt()
+            mPaddingRight =
+                a.getDimension(R.styleable.BaseRecyclerView_recyclerPaddingRight, 0.0f).toInt()
+            mPaddingBottom =
+                a.getDimension(R.styleable.BaseRecyclerView_recyclerPaddingBottom, 0.0f).toInt()
             mScrollbar = a.getInteger(R.styleable.BaseRecyclerView_scrollbars, -1)
             mScrollbarStyle = a.getInteger(R.styleable.BaseRecyclerView_scrollbarStyle, -1)
         } finally {
@@ -96,10 +101,17 @@ class BaseRecyclerView : FrameLayout {
         mErrorView = FrameLayout(context)
         mShimmerContainer = ShimmerFrameLayout(context)
 
-        baseEmptyBinding = LayoutBaseEmptyBinding.inflate(LayoutInflater.from(context), mEmptyView, false)
-        baseErrorBinding = LayoutBaseErrorBinding.inflate(LayoutInflater.from(context), mErrorView, false)
-        baseShimmerBinding = LayoutBaseShimmerBinding.inflate(LayoutInflater.from(context), mShimmerContainer, false)
-        baseRecyclerBinding = LayoutBaseRecyclerviewBinding.inflate(LayoutInflater.from(context), mRecyclerView, false)
+        baseEmptyBinding =
+            LayoutBaseEmptyViewBinding.inflate(LayoutInflater.from(context), mEmptyView, false)
+        baseErrorBinding =
+            LayoutBaseErrorBinding.inflate(LayoutInflater.from(context), mErrorView, false)
+        baseShimmerBinding =
+            LayoutBaseShimmerBinding.inflate(LayoutInflater.from(context), mShimmerContainer, false)
+        baseRecyclerBinding = LayoutBaseRecyclerviewBinding.inflate(
+            LayoutInflater.from(context),
+            mRecyclerView,
+            false
+        )
 
         addView(baseEmptyBinding.root)
         addView(baseErrorBinding.root)
@@ -149,6 +161,27 @@ class BaseRecyclerView : FrameLayout {
      * Below are some methods for setting the RecyclerView attributes
      */
 
+    fun getSwipeRefreshLayout(): SwipeRefreshLayout {
+        return baseRecyclerBinding.swipeRefresh
+    }
+
+    fun setSwipeRefreshLoadingListener(listener: SwipeRefreshLayout.OnRefreshListener) {
+        baseRecyclerBinding.swipeRefresh.setColorSchemeResources(
+            R.color.colorPrimary,
+            R.color.colorPrimaryDark,
+            R.color.white
+        )
+        baseRecyclerBinding.swipeRefresh.setOnRefreshListener(listener)
+    }
+
+    fun releaseBlock() {
+        baseRecyclerBinding.recyclerView.releaseBlock()
+    }
+
+    fun setLastPage() {
+        baseRecyclerBinding.recyclerView.setLastPage()
+    }
+
     fun setRecyclerViewPadding(left: Int, top: Int, right: Int, bottom: Int) {
         this.mPaddingLeft = left
         this.mPaddingTop = top
@@ -187,38 +220,6 @@ class BaseRecyclerView : FrameLayout {
         return baseRecyclerBinding.recyclerView.adapter
     }
 
-    /**
-     * Below are some methods from XRecyclerView
-     */
-
-    fun destroy() {
-        baseRecyclerBinding.recyclerView.destroy()
-    }
-
-    fun addHeaderView(view: View) {
-        baseRecyclerBinding.recyclerView.addHeaderView(view)
-    }
-
-    fun loadMoreComplete() {
-        baseRecyclerBinding.recyclerView.loadMoreComplete()
-    }
-
-    fun setNoMore(isNoMore: Boolean) {
-        baseRecyclerBinding.recyclerView.setNoMore(isNoMore)
-    }
-
-    fun setPullToRefreshEnable(isPullToRefresh: Boolean) {
-        baseRecyclerBinding.recyclerView.setPullRefreshEnabled(isPullToRefresh)
-    }
-
-    fun completeRefresh() {
-        baseRecyclerBinding.recyclerView.refreshComplete()
-    }
-
-    fun setLoadingMoreEnabled(isLoadMore: Boolean) {
-        baseRecyclerBinding.recyclerView.setLoadingMoreEnabled(isLoadMore)
-    }
-
     fun setAdapter(adapter: RecyclerView.Adapter<*>?) {
         baseRecyclerBinding.recyclerView.adapter = adapter
     }
@@ -227,8 +228,8 @@ class BaseRecyclerView : FrameLayout {
         baseRecyclerBinding.recyclerView.layoutManager = layout
     }
 
-    fun setLoadingListener(listener: XRecyclerView.LoadingListener) {
-        baseRecyclerBinding.recyclerView.setLoadingListener(listener)
+    fun setLoadingListener(listener: EndlessScrollCallback) {
+        baseRecyclerBinding.recyclerView.setEndlessScrollCallback(listener)
     }
 
     fun scrollToPosition(position: Int) {
@@ -278,12 +279,12 @@ class BaseRecyclerView : FrameLayout {
         baseErrorBinding.contentError.visibility = View.VISIBLE
     }
 
-    fun initialShimmer(){
+    fun initialShimmer() {
         hideEmpty()
         showShimmer()
     }
 
-    fun finishShimmer(){
+    fun finishShimmer() {
         stopShimmer()
         showRecycler()
     }
@@ -305,7 +306,7 @@ class BaseRecyclerView : FrameLayout {
     }
 
     fun showEmptyTitleView(status: Boolean) {
-        when(status){
+        when (status) {
             true -> baseEmptyBinding.tvTitleEmptyView.visibility = View.VISIBLE
             false -> baseEmptyBinding.tvTitleEmptyView.visibility = View.GONE
         }
@@ -315,7 +316,7 @@ class BaseRecyclerView : FrameLayout {
         baseEmptyBinding.btnEmpty.text = text
     }
 
-    fun setBackgroungEmptyButton(drawableRes: Int){
+    fun setBackgroungEmptyButton(drawableRes: Int) {
         baseEmptyBinding.btnEmpty.setBackgroundResource(drawableRes)
     }
 
@@ -336,7 +337,7 @@ class BaseRecyclerView : FrameLayout {
     }
 
     fun showErrorTitleView(status: Boolean) {
-        when(status){
+        when (status) {
             true -> baseErrorBinding.tvTitleErrorView.visibility = View.VISIBLE
             false -> baseErrorBinding.tvTitleErrorView.visibility = View.GONE
         }
@@ -346,7 +347,7 @@ class BaseRecyclerView : FrameLayout {
         baseErrorBinding.btnError.text = text
     }
 
-    fun setBackgroungErrorButton(drawableRes: Int){
+    fun setBackgroungErrorButton(drawableRes: Int) {
         baseErrorBinding.btnError.setBackgroundResource(drawableRes)
     }
 

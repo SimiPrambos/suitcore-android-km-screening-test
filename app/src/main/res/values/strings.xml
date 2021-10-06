@@ -6,19 +6,10 @@
     <string name="txt_empty_member">No member found</string>
     <string name="txt_empty_member_content">There is no member to view</string>
 
-    <string name="txt_dialog_loading">Please Wait</string>
-    <string name="txt_dialog_yes">Yes</string>
-    <string name="txt_dialog_ok">OK</string>
-    <string name="txt_error_global">An occur errors..</string>
-    <string name="txt_dialog_no">No</string>
-
     <!-- Twitter -->
-    <string name="twitter_api_key">SrKNXbDg66CIEYUcG649d8pgO</string>
-    <string name="twitter_secret_key">wzTzscmMWOQPcHjiU3hZ2UABODDQVoMUCWktwPcuBpNC9oOh9L</string>
-    <string name="txt_twitter_not_installed">Twitter App is not installed</string>
 
     <!-- Google -->
-    <string name="google_default_web_client_id">AAAA0Szs51c:APA91bGK7PDC7FFAxaYheviO3w4rYhJHcJtumjf21RoSdXrakatKwlMcns-BRRoEBzT4fSpXB2hYetHQobWSayjNqch8CDS7KWUqEqUjoyngD00_czYleGG9x9yJm_feLlCWQI060--U</string>
+    <string name="google_default_web_client_id">898401888087-tpqokrn96nico2irun0glt2fodeq0ui6.apps.googleusercontent.com</string>
 
     <!-- Facebook -->
     <string name="facebook_app_id">1879532772347939</string>
@@ -33,20 +24,15 @@
     <string name="txt_error_bad_request">Bad Request</string>
     <string name="txt_error_no_internet_connection">No Internet Connection</string>
     <string name="txt_error_custom">Something Went Wrong API is not responding properly!</string>
-    <string name="txt_error_crash">an error has occurred. the application will restart from the beginning and if it still errors please try deleting the application data and try again</string>
     <string name="txt_refresh">Refresh</string>
     <string name="txt_retry">Retry</string>
     <string name="txt_error_no_internet">No Internet Connection</string>
-    <string name="txt_skip">Skip</string>
     <string name="txt_button_fb_login">LOGIN FACEBOOK</string>
     <string name="txt_button_twitter_login">LOGIN TWITTER</string>
     <string name="txt_button_google_login">LOGIN GOOGLE</string>
     <string name="txt_show_fragment">Show Fragment</string>
-    <string name="txt_alert_dialog">ALERT DIALOG</string>
-    <string name="txt_confirm_dialog">CONFIRM DIALOG</string>
     <string name="txt_toolbar_search">Search</string>
     <string name="txt_hint_input_name">Search Location</string>
-    <string name="txt_button_search">Search</string>
 
     <string name="txt_title">Title</string>
     <string name="txt_menu_one">Members</string>

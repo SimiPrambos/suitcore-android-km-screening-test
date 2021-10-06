@@ -4,7 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.viewbinding.ViewBinding
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.gson.JsonPrimitive
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -21,8 +21,7 @@ import com.suitcore.feature.event.search.SearchPlaceActivity
 import com.suitcore.helper.CommonUtils
 
 
-class EventFragment : BaseFragment(), EventView {
-
+class EventFragment : BaseFragment<FragmentEventBinding>(), EventView {
 
     private var eventPresenter: EventPresenter? = null
     private var adapter: EventPagerAdapter? = null
@@ -33,18 +32,16 @@ class EventFragment : BaseFragment(), EventView {
     private var markerNormal = "marker_normal"
     private var markerSelected = "marker_selected"
 
-    private lateinit var eventBinding: FragmentEventBinding
-
     companion object {
-        fun newInstance(): BaseFragment {
+        fun newInstance(): Fragment {
             return EventFragment()
         }
     }
 
-    override fun setBinding(inflater: LayoutInflater, container: ViewGroup?): ViewBinding {
-        eventBinding = FragmentEventBinding.inflate(inflater, container, false)
-        return eventBinding
-    }
+    override fun getViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentEventBinding = FragmentEventBinding.inflate(inflater, container, false)
 
     override fun onViewReady(savedInstanceState: Bundle?) {
         setupPresenter()
@@ -59,7 +56,7 @@ class EventFragment : BaseFragment(), EventView {
 
     private fun setupMap(events: List<Event>) {
         setupPager(events)
-        eventBinding.mapEvent.getMapAsync { mapBoxMap ->
+        binding.mapEvent.getMapAsync { mapBoxMap ->
             this.mapBox = mapBoxMap
 
             mapBoxMap.setStyle(Style.MAPBOX_STREETS) { style ->
@@ -68,7 +65,7 @@ class EventFragment : BaseFragment(), EventView {
 
                 // create symbol manager
                 val geoJsonOptions = GeoJsonOptions().withTolerance(0.4f)
-                symbolManager = SymbolManager(eventBinding.mapEvent, mapBoxMap, style, null, geoJsonOptions)
+                symbolManager = SymbolManager(binding.mapEvent, mapBoxMap, style, null, geoJsonOptions)
                 symbolManager?.addClickListener { symbol ->
                     showToast("value : " + symbol.data?.asString.toString())
                     val pos = hashMapEvents.filterKeys { it == symbol.data?.asInt }.getValue(symbol.data?.asInt!!)
@@ -103,7 +100,7 @@ class EventFragment : BaseFragment(), EventView {
         symbolManager?.symbolPlacement = markerSelected
         symbolManager?.update(symbol)
 
-        eventBinding.vpEvent.currentItem = position
+        binding.vpEvent.currentItem = position
         for (item in 0 until symbolManager?.annotations?.size()!!) {
             val currentSymbol = symbolManager.annotations!![item.toLong()]
             if (currentSymbol?.id != symbol?.id) {
@@ -124,13 +121,13 @@ class EventFragment : BaseFragment(), EventView {
         }
 
         adapter?.listData = events
-        eventBinding.vpEvent.adapter = adapter
+        binding.vpEvent.adapter = adapter
 
-        eventBinding.vpEvent.clipToPadding = false
-        eventBinding.vpEvent.setPadding(50, 0, 50, 0)
-        eventBinding.vpEvent.pageMargin = 20
+        binding.vpEvent.clipToPadding = false
+        binding.vpEvent.setPadding(50, 0, 50, 0)
+        binding.vpEvent.pageMargin = 20
 
-        eventBinding.vpEvent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.vpEvent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
 
             }
@@ -151,7 +148,7 @@ class EventFragment : BaseFragment(), EventView {
     }
 
     private fun actionClick() {
-        eventBinding.relSearch.setOnClickListener {
+        binding.relSearch.setOnClickListener {
             goToActivity(SearchPlaceActivity::class.java, null, false, isFinish = false)
         }
     }

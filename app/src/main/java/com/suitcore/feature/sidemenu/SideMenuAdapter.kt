@@ -1,5 +1,6 @@
 package com.suitcore.feature.sidemenu
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -24,13 +25,15 @@ class SideMenuAdapter(var context: Context?) : BaseRecyclerAdapter<SideMenu, Sid
     }
 
     var selectedItem = 0
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SideMenuItemView {
-        itemSideMenuBinding = ItemSideMenuBinding.inflate(LayoutInflater.from(context) , parent,false)
+        itemSideMenuBinding =
+            ItemSideMenuBinding.inflate(LayoutInflater.from(context), parent, false)
         val view = SideMenuItemView(itemSideMenuBinding)
         mOnActionListener?.let { view.setOnActionListener(it) }
         return view
@@ -39,7 +42,8 @@ class SideMenuAdapter(var context: Context?) : BaseRecyclerAdapter<SideMenu, Sid
     override fun onBindViewHolder(holder: SideMenuItemView, position: Int) {
         context?.let { ctx ->
             if (position == selectedItem) {
-                holder.getTitleView().setTextColor(ContextCompat.getColor(ctx, R.color.colorPrimary))
+                holder.getTitleView()
+                    .setTextColor(ContextCompat.getColor(ctx, R.color.colorPrimary))
             } else {
                 holder.getTitleView().setTextColor(ContextCompat.getColor(ctx, R.color.black))
             }
