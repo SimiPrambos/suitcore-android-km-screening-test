@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.suitcore.R
 import com.suitcore.base.ui.BaseFragment
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
