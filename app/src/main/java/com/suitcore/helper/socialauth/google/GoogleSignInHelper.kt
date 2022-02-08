@@ -93,7 +93,11 @@ class GoogleSignInHelper(
             Observable.create(ObservableOnSubscribe<String> { emitter ->
                 try {
                     val scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE
-                    val token = GoogleAuthUtil.getToken(mContext, account.account, scope, Bundle())
+                    val token =
+                        account.account?.let {
+                            GoogleAuthUtil.getToken(mContext,
+                                it, scope, Bundle())
+                        }
                     //send token to server
                     mListener?.onGoogleAuthSignIn(token.toString(), account.id)
                 } catch (e: Exception) {

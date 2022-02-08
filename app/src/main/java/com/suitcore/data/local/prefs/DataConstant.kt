@@ -13,6 +13,6 @@ object DataConstant {
     const val PLAYER_ID = "player_id"
     const val BASE_URL = "base_url"
     const val IS_LOGIN = "is_login"
-
+    const val CURRENT_LANG = "en"
 
 }

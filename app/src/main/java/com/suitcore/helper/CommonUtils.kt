@@ -1,12 +1,17 @@
 package com.suitcore.helper
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager.NameNotFoundException
+import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Bundle
+import android.os.Build
+import android.provider.Settings
+import android.telephony.TelephonyManager
+import android.util.Log
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
@@ -20,6 +25,7 @@ import com.suitcore.data.model.User
 import com.suitcore.feature.login.LoginActivity
 import com.suitcore.feature.splashscreen.SplashScreenActivity
 import java.io.IOException
+
 
 /**
  * Created by dodydmw19 on 7/18/18.
@@ -171,6 +177,31 @@ class CommonUtils {
             }?:run{
                 return false
             }
+        }
+
+        @SuppressLint("HardwareIds")
+        fun getIMEIDeviceId(context: Context): String {
+            val deviceId: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+            } else {
+                val mTelephony =
+                    context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                        return ""
+                    }
+                }
+                if (mTelephony.deviceId != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        mTelephony.imei
+                    } else {
+                        mTelephony.deviceId
+                    }
+                } else {
+                    Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+                }
+            }
+            return deviceId
         }
 
     }

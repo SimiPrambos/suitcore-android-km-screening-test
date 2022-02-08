@@ -2,6 +2,8 @@ package com.suitcore
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -18,6 +20,7 @@ import com.suitcore.firebase.analytics.FireBaseHelper
 import com.suitcore.helper.ActivityLifecycleCallbacks
 import com.suitcore.helper.CommonConstant
 import com.suitcore.helper.CommonUtils
+import com.suitcore.helper.localization.LanguageHelper
 import com.suitcore.helper.rxbus.RxBus
 import com.suitcore.onesignal.OneSignalHelper
 import io.realm.Realm
@@ -34,6 +37,7 @@ class BaseApplication : MultiDexApplication() {
 
     init {
         instance = this
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
 
     companion object {
@@ -81,7 +85,13 @@ class BaseApplication : MultiDexApplication() {
     }
 
     override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
+        SuitPreferences.init(base)
+        super.attachBaseContext(LanguageHelper.setLocale(base))
         MultiDex.install(this)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        LanguageHelper.setLocale(this)
     }
 }

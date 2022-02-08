@@ -36,6 +36,7 @@
             style="@style/BtnText.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="@string/txt_button_google_login" />
 
     </RelativeLayout>
@@ -57,6 +58,7 @@
             style="@style/BtnText.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="@string/txt_button_fb_login" />
 
     </RelativeLayout>

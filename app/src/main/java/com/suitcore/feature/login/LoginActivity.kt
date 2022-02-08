@@ -54,6 +54,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginView, RemoteCon
         setupSocialLogin()
         actionClicked()
         needPermissions()
+        CommonUtils.getIMEIDeviceId(this)
     }
 
     override fun onResume() {

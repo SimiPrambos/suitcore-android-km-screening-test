@@ -2,6 +2,7 @@ package com.suitcore.base.ui
 
 import android.annotation.TargetApi
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
@@ -23,6 +24,7 @@ import com.suitcore.base.presenter.MvpView
 import com.suitcore.base.ui.dialog.BaseDialog
 import com.suitcore.base.ui.dialog.BaseDialogInterface
 import com.suitcore.base.ui.recyclerview.BaseRecyclerView
+import com.suitcore.helper.localization.LanguageHelper
 
 
 abstract class BaseActivity<VB : ViewBinding>: AppCompatActivity(), MvpView {
@@ -37,6 +39,10 @@ abstract class BaseActivity<VB : ViewBinding>: AppCompatActivity(), MvpView {
 
     private val baseFragmentManager: FragmentManager
         get() = super.getSupportFragmentManager()
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(LanguageHelper.setLocale(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

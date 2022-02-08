@@ -1,51 +1,60 @@
 package com.suitcore.helper.localization
 
-import android.content.res.Configuration
-
-import java.util.Locale
-import android.os.Build
-import android.annotation.TargetApi
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
+import android.os.Build
+import com.suitcore.data.local.prefs.DataConstant
+import com.suitcore.data.local.prefs.SuitPreferences
+import java.util.*
 
 
-@Suppress("DEPRECATION")
 /**
- * Created by DODYDMW19 on 12/20/2017.
+ * Created by DODYDMW19 on 02/08/2022.
  */
 
 object LanguageHelper {
 
+    var mEnglishFlag = "en"
+    var mIndonesianFlag = "in"
+
+    fun setLocale(context: Context?): Context {
+        return updateResources(context!!, getCurrentLanguage(context)!!)
+    }
+
+    fun setNewLocale(context: Context, language: String) {
+        persistLanguagePreference(language)
+        updateResources(context, language)
+    }
+
+    private fun getCurrentLanguage(context: Context?): String {
+        val mCurrentLanguage = SuitPreferences.instance()?.getString(DataConstant.CURRENT_LANG).toString()
+        return mCurrentLanguage.ifEmpty { mEnglishFlag }
+    }
+
+    private fun persistLanguagePreference(language: String) {
+        SuitPreferences.instance()?.saveString(DataConstant.CURRENT_LANG, language)
+    }
+
     @Suppress("DEPRECATION")
-    fun getSystemLocaleLegacy(config: Configuration): Locale {
-        return config.locale
-    }
+    @SuppressLint("ObsoleteSdkInt")
+    fun updateResources(context: Context, language: String): Context {
 
-    @TargetApi(Build.VERSION_CODES.N)
-    fun getSystemLocale(config: Configuration): Locale {
-        return config.locales.get(0)
-    }
-
-    @Suppress("DEPRECATION")
-    private fun setSystemLocaleLegacy(config: Configuration, locale: Locale) {
-        config.locale = locale
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    private fun setSystemLocale(config: Configuration, locale: Locale) {
-        config.setLocale(locale)
-    }
-
-    fun setLanguage(context: Context, languageCode: String) {
-        val locale = Locale(languageCode)
+        var contextFun = context
+        val locale = Locale(language)
         Locale.setDefault(locale)
-        val config = Configuration()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setSystemLocale(config, locale)
+
+        val resources = context.resources
+        val configuration = Configuration(resources.configuration)
+
+        if (Build.VERSION.SDK_INT >= 17) {
+            configuration.setLocale(locale)
+            contextFun = context.createConfigurationContext(configuration)
         } else {
-            setSystemLocaleLegacy(config, locale)
+            configuration.locale = locale
+            resources.updateConfiguration(configuration, resources.displayMetrics)
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
-            context.applicationContext.resources.updateConfiguration(config,
-                    context.resources.displayMetrics)
+        return contextFun
     }
+
 }
