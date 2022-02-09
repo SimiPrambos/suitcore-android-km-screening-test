@@ -161,6 +161,11 @@ class BaseRecyclerView : FrameLayout {
      * Below are some methods for setting the RecyclerView attributes
      */
 
+    fun enableSwipeRefresh(value: Boolean){
+        baseRecyclerBinding.swipeRefresh.isRefreshing = value
+        baseRecyclerBinding.swipeRefresh.isEnabled = value
+    }
+
     fun getSwipeRefreshLayout(): SwipeRefreshLayout {
         return baseRecyclerBinding.swipeRefresh
     }

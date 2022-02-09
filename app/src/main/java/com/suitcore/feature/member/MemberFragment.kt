@@ -59,16 +59,18 @@ class MemberFragment : BaseFragment<FragmentMemberBinding>(),
         binding.rvMember.apply {
             setUpAsList()
             setAdapter(memberAdapter)
-            setSwipeRefreshLoadingListener {
-                currentPage = 1
-                loadData(currentPage)
-            }
-            setLoadingListener(object : EndlessScrollCallback {
-                override fun loadMore() {
-                    currentPage++
-                    loadData(currentPage)
-                }
-            })
+            /* Disable pull to refresh & pagination */
+            enableSwipeRefresh(false)
+//            setSwipeRefreshLoadingListener {
+//                currentPage = 1
+//                loadData(currentPage)
+//            }
+//            setLoadingListener(object : EndlessScrollCallback {
+//                override fun loadMore() {
+//                    currentPage++
+//                    loadData(currentPage)
+//                }
+//            })
         }
         memberAdapter?.setOnActionListener(this)
         binding.rvMember.showShimmer()
